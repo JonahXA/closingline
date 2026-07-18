@@ -4,12 +4,19 @@ import BrierBars from "../components/BrierBars";
 import Monthly from "../components/Monthly";
 
 type Summary = {
+  model?: string;
   league: string;
   matches: number;
   model_brier: number;
   market_brier: number;
   model_logloss: number;
   market_logloss: number;
+};
+
+const MODEL_NAMES: Record<string, string> = {
+  "dixon-coles": "Dixon-Coles",
+  "elo-poisson": "Elo-Poisson",
+  ensemble: "Ensemble (log-pool)",
 };
 
 type Upcoming = {
@@ -27,7 +34,9 @@ const data = raw as unknown as {
   generated_at: string;
   leagues: Record<string, string>;
   backtest: {
+    primary_model?: string;
     summary: Summary[];
+    models?: Summary[];
     calibration: { bin_mid: number; predicted: number; observed: number; n: number }[];
     monthly: { month: string; model_brier: number; market_brier: number; n: number }[];
     start: string;
@@ -169,6 +178,53 @@ export default function Home() {
             </div>
           </section>
 
+          {bt.models && bt.models.length > 1 && (
+            <section className="card">
+              <h2>Model zoo</h2>
+              <p className="sub">
+                All leagues pooled. The starred model drives the headline stats and charts above;
+                every model&apos;s forecasts are published daily, so each builds its own public
+                track record. Honest finding so far: the equal-weight ensemble does not beat
+                Dixon-Coles — weighted pooling is on the roadmap.
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Brier</th>
+                    <th>Log loss</th>
+                    <th>Brier gap to market</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[...bt.models]
+                    .sort((a, b) => a.model_brier - b.model_brier)
+                    .map((m) => (
+                      <tr key={m.model}>
+                        <td>
+                          {MODEL_NAMES[m.model ?? ""] ?? m.model}
+                          {m.model === bt.primary_model ? " ★" : ""}
+                        </td>
+                        <td>{m.model_brier.toFixed(4)}</td>
+                        <td>{m.model_logloss.toFixed(4)}</td>
+                        <td>
+                          +{(((m.model_brier - m.market_brier) / m.market_brier) * 100).toFixed(2)}%
+                        </td>
+                      </tr>
+                    ))}
+                  <tr>
+                    <td>
+                      <strong>Closing line (de-vigged)</strong>
+                    </td>
+                    <td>{bt.models[0].market_brier.toFixed(4)}</td>
+                    <td>{bt.models[0].market_logloss.toFixed(4)}</td>
+                    <td>—</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          )}
+
           <section className="card">
             <h2>Accuracy over time</h2>
             <p className="sub">
@@ -183,12 +239,14 @@ export default function Home() {
       <section className="card">
         <h2>Method</h2>
         <p className="sub" style={{ marginBottom: 0 }}>
-          Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential
-          time decay (half-life ≈ 1 year), fit per league on top-flight and second-division
-          results by weighted maximum likelihood. Backtests are strictly walk-forward: each
-          forecast uses only information available before its refit date. Market probabilities are
-          de-vigged closing odds, Pinnacle preferred. This is a market-efficiency research project,
-          not betting advice.
+          Two structurally different models — Dixon-Coles (1997) bivariate Poisson with low-score
+          dependence correction and exponential time decay (half-life ≈ 1 year), and an
+          Elo-Poisson model (goal-margin-weighted Elo ratings mapped to expected goals by Poisson
+          regression) — combined in an equal-weight log-linear pool. All fit per league on
+          top-flight and second-division results, so promoted teams carry real parameters.
+          Backtests are strictly walk-forward: each forecast uses only information available
+          before its refit date. Market probabilities are de-vigged closing odds, Pinnacle
+          preferred. This is a market-efficiency research project, not betting advice.
         </p>
       </section>
 

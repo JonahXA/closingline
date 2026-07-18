@@ -11,7 +11,7 @@ The research question, extending my [ML market-efficiency study of the 2026 Worl
 ## How it works
 
 1. **Ingest** — historical results and closing odds from [football-data.co.uk](https://www.football-data.co.uk), plus upcoming fixtures.
-2. **Model** — Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay (half-life ≈ 1 year), fit per league by weighted MLE.
+2. **Model** — a small zoo: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay, plus an Elo-Poisson model (margin-weighted Elo ratings mapped to expected goals), pooled in an equal-weight log-linear ensemble. All fit per league (top flight + second division) by weighted MLE; every model's forecasts are published so each builds its own track record.
 3. **Predict** — daily GitHub Actions run issues forecasts for fixtures in the next 7 days and commits them to [`predictions/`](predictions/). First issuance stands; nothing is overwritten.
 4. **Evaluate** — once results arrive, forecasts are scored with Brier score and log loss against de-vigged closing-line probabilities (Pinnacle closing preferred).
 
@@ -32,10 +32,12 @@ The dashboard is a static Next.js app in [`dashboard/`](dashboard/), rebuilt and
 
 | | Brier | Log loss |
 |---|---|---|
-| ClosingLine model | 0.5874 | 0.9855 |
+| Dixon-Coles (primary) | 0.5874 | 0.9855 |
+| Ensemble (equal-weight log-pool) | 0.5885 | 0.9873 |
+| Elo-Poisson | 0.5911 | 0.9914 |
 | De-vigged closing line | 0.5734 | 0.9644 |
 
-The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap.
+The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap. Honest finding: the naive ensemble does **not** beat Dixon-Coles — Elo-Poisson is weaker and highly correlated, so equal-weight pooling dilutes the better model. All three models' forecasts are published daily so each builds its own live track record.
 
 ## Roadmap
 
@@ -43,7 +45,8 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Public dashboard (Next.js + Recharts on GitHub Pages) with calibration plots and league tables
 - [x] Handle promoted teams properly (train on second-division data)
 - [x] Walk-forward backtest suite across past seasons
-- [ ] Model zoo: Elo-Poisson, gradient-boosted models, ensemble
+- [x] Model zoo v1: Elo-Poisson + equal-weight ensemble, all tracks published
+- [ ] Weighted / stacked ensembling; gradient-boosted feature model
 - [ ] Expected-value analysis vs opening vs closing lines (CLV study)
 
 ## Disclaimer

@@ -38,26 +38,23 @@ def run() -> pd.DataFrame:
     if merged.empty:
         raise SystemExit("No predicted matches have results yet.")
 
-    outcome = np.select(
-        [merged["FTHG"] > merged["FTAG"], merged["FTHG"] == merged["FTAG"]], [0, 1], 2
-    )
-
     rows = []
-    for div, group_idx in [("ALL", merged.index)] + [
-        (d, merged.index[merged["Div"] == d]) for d in sorted(merged["Div"].unique())
-    ]:
-        g = merged.loc[group_idx]
-        out = outcome[merged.index.get_indexer(group_idx)]
-        row = {"league": div, "matches": len(g)}
-        for name, cols in PROB_COLS.items():
-            sub = g.dropna(subset=cols)
-            if sub.empty:
-                row[f"{name}_brier"], row[f"{name}_logloss"] = None, None
-                continue
-            sub_out = out[g.index.get_indexer(sub.index)]
-            b, ll = _scores(sub[cols].to_numpy(dtype=float), sub_out)
-            row[f"{name}_brier"], row[f"{name}_logloss"] = round(b, 4), round(ll, 4)
-        rows.append(row)
+    for model in merged["model"].unique():
+        gm = merged[merged["model"] == model].reset_index(drop=True)
+        outcome = np.select([gm["FTHG"] > gm["FTAG"], gm["FTHG"] == gm["FTAG"]], [0, 1], 2)
+        for div in ["ALL"] + sorted(gm["Div"].unique()):
+            mask = np.ones(len(gm), dtype=bool) if div == "ALL" else (gm["Div"] == div).to_numpy()
+            g, out = gm[mask], outcome[mask]
+            row = {"model": model, "league": div, "matches": len(g)}
+            for name, cols in PROB_COLS.items():
+                sub = g.dropna(subset=cols)
+                if sub.empty:
+                    row[f"{name}_brier"], row[f"{name}_logloss"] = None, None
+                    continue
+                sub_out = out[g.index.get_indexer(sub.index)]
+                b, ll = _scores(sub[cols].to_numpy(dtype=float), sub_out)
+                row[f"{name}_brier"], row[f"{name}_logloss"] = round(b, 4), round(ll, 4)
+            rows.append(row)
 
     report = pd.DataFrame(rows)
     print(report.to_string(index=False))

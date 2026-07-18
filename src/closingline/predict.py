@@ -13,7 +13,7 @@ from pathlib import Path
 import pandas as pd
 
 from . import data
-from .model import DixonColes
+from .zoo import build_models, fit_all
 
 PREDICTIONS_DIR = Path("predictions")
 
@@ -51,22 +51,24 @@ def run(horizon_days: int = 7) -> pd.DataFrame:
     rows = []
     generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     for div in fixtures["Div"].unique():
-        model = DixonColes().fit(results[results["Div"].isin(data.training_divisions(div))])
+        models = build_models()
+        fit_all(models, results[results["Div"].isin(data.training_divisions(div))])
         for _, fx in fixtures[fixtures["Div"] == div].iterrows():
-            p_home, p_draw, p_away = model.predict(fx["HomeTeam"], fx["AwayTeam"])
-            rows.append(
-                {
-                    "Div": div,
-                    "Date": fx["Date"].date().isoformat(),
-                    "HomeTeam": fx["HomeTeam"],
-                    "AwayTeam": fx["AwayTeam"],
-                    "p_home": round(p_home, 4),
-                    "p_draw": round(p_draw, 4),
-                    "p_away": round(p_away, 4),
-                    "model": "dixon-coles-v1",
-                    "generated_at": generated_at,
-                }
-            )
+            for model in models:
+                p_home, p_draw, p_away = model.predict(fx["HomeTeam"], fx["AwayTeam"])
+                rows.append(
+                    {
+                        "Div": div,
+                        "Date": fx["Date"].date().isoformat(),
+                        "HomeTeam": fx["HomeTeam"],
+                        "AwayTeam": fx["AwayTeam"],
+                        "p_home": round(p_home, 4),
+                        "p_draw": round(p_draw, 4),
+                        "p_away": round(p_away, 4),
+                        "model": model.name,
+                        "generated_at": generated_at,
+                    }
+                )
 
     out = pd.DataFrame(rows)
     PREDICTIONS_DIR.mkdir(exist_ok=True)

@@ -13,6 +13,7 @@ from . import data
 from .backtest import REPORTS_DIR, summarize
 from .markets import add_market_columns
 from .predict import load_all_predictions
+from .zoo import PRIMARY_MODEL
 
 DEST = Path("dashboard/public/data.json")
 
@@ -78,15 +79,25 @@ def run() -> None:
     bt_path = REPORTS_DIR / "backtest.csv"
     if bt_path.exists():
         bt = pd.read_csv(bt_path)
+        if "model" not in bt.columns:
+            bt = bt.assign(model=PRIMARY_MODEL)
+        summary = summarize(bt)
+        primary = bt[bt["model"] == PRIMARY_MODEL]
         payload["backtest"] = {
-            "summary": summarize(bt).to_dict(orient="records"),
-            "calibration": _calibration(bt),
-            "monthly": _monthly(bt),
+            "primary_model": PRIMARY_MODEL,
+            # Per-league rows for the primary model drive the league charts;
+            # the ALL rows across models drive the model-zoo comparison.
+            "summary": summary[summary["model"] == PRIMARY_MODEL].to_dict(orient="records"),
+            "models": summary[summary["league"] == "ALL"].to_dict(orient="records"),
+            "calibration": _calibration(primary),
+            "monthly": _monthly(primary),
             "start": bt["Date"].min(),
             "end": bt["Date"].max(),
         }
 
     preds = load_all_predictions()
+    if not preds.empty:
+        preds = preds[preds["model"] == PRIMARY_MODEL]
     if not preds.empty:
         preds["Date"] = pd.to_datetime(preds["Date"]).dt.date.astype(str)
         results = add_market_columns(data.load_results())

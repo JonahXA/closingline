@@ -35,6 +35,8 @@ def _tau(hg: np.ndarray, ag: np.ndarray, lam: np.ndarray, mu: np.ndarray, rho: f
 
 
 class DixonColes:
+    name = "dixon-coles"
+
     def __init__(self, xi: float = DEFAULT_XI):
         self.xi = xi
         self.teams: list[str] = []
