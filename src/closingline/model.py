@@ -78,7 +78,17 @@ class DixonColes:
             )
             return -(w * ll).sum()
 
-        p0 = np.concatenate([np.zeros(n - 1), np.full(n, 0.1), [0.25, -0.05]])
+        if self.attack:
+            # Warm start from the previous fit (walk-forward refits drift slowly).
+            p0 = np.concatenate(
+                [
+                    [self.attack.get(t, 0.0) for t in self.teams[:-1]],
+                    [self.defense.get(t, 0.1) for t in self.teams],
+                    [self.home_adv, self.rho],
+                ]
+            )
+        else:
+            p0 = np.concatenate([np.zeros(n - 1), np.full(n, 0.1), [0.25, -0.05]])
         res = minimize(nll, p0, method="L-BFGS-B")
         att, dfn, self.home_adv, self.rho = unpack(res.x)
         self.attack = dict(zip(self.teams, att))

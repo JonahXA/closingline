@@ -12,6 +12,10 @@ def main() -> None:
     p = sub.add_parser("predict", help="Issue forecasts for upcoming fixtures")
     p.add_argument("--horizon", type=int, default=7, help="Days ahead to predict")
     sub.add_parser("evaluate", help="Score issued forecasts vs results and the market")
+    b = sub.add_parser("backtest", help="Walk-forward backtest over past seasons")
+    b.add_argument("--seasons", type=int, default=3)
+    b.add_argument("--refit-days", type=int, default=28)
+    sub.add_parser("export", help="Export dashboard data JSON from reports and predictions")
 
     args = parser.parse_args()
     if args.command == "ingest":
@@ -33,6 +37,14 @@ def main() -> None:
         from . import evaluate
 
         evaluate.run()
+    elif args.command == "backtest":
+        from . import backtest
+
+        backtest.run(seasons=args.seasons, refit_days=args.refit_days)
+    elif args.command == "export":
+        from . import export
+
+        export.run()
 
 
 if __name__ == "__main__":

@@ -51,7 +51,7 @@ def run(horizon_days: int = 7) -> pd.DataFrame:
     rows = []
     generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     for div in fixtures["Div"].unique():
-        model = DixonColes().fit(results[results["Div"] == div])
+        model = DixonColes().fit(results[results["Div"].isin(data.training_divisions(div))])
         for _, fx in fixtures[fixtures["Div"] == div].iterrows():
             p_home, p_draw, p_away = model.predict(fx["HomeTeam"], fx["AwayTeam"])
             rows.append(

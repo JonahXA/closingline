@@ -19,6 +19,17 @@ LEAGUES = {
     "F1": "Ligue 1",
 }
 
+# Second tiers, used only for training so promoted teams carry real
+# parameters into the top flight. Keyed by the top division they feed.
+SECOND_TIERS = {"E0": "E1", "SP1": "SP2", "I1": "I2", "D1": "D2", "F1": "F2"}
+
+ALL_DIVISIONS = list(LEAGUES) + list(SECOND_TIERS.values())
+
+
+def training_divisions(league: str) -> list[str]:
+    """Divisions whose matches inform the model for a top-flight league."""
+    return [league, SECOND_TIERS[league]]
+
 DATA_DIR = Path("data/raw")
 
 # Seasons of history to keep on disk. Model training uses a shorter,
@@ -42,7 +53,7 @@ def download_history(seasons: int = ARCHIVE_SEASONS) -> None:
     current = current_season_start_year()
     for start_year in range(current - seasons + 1, current + 1):
         code = season_code(start_year)
-        for div in LEAGUES:
+        for div in ALL_DIVISIONS:
             dest = DATA_DIR / f"{code}_{div}.csv"
             if dest.exists() and start_year < current - 1:
                 continue
@@ -70,7 +81,7 @@ def _read_csv(path: Path) -> pd.DataFrame:
         df = pd.read_csv(path, encoding="latin-1", on_bad_lines="skip")
         df.columns = [c.replace("﻿", "").replace("ï»¿", "") for c in df.columns]
     df = df.dropna(subset=["HomeTeam", "AwayTeam"])
-    df = df[df["Div"].isin(LEAGUES)]
+    df = df[df["Div"].isin(ALL_DIVISIONS)]
     df["Date"] = pd.to_datetime(df["Date"], dayfirst=True, format="mixed", errors="coerce")
     return df.dropna(subset=["Date"])
 
@@ -96,4 +107,5 @@ def load_fixtures() -> pd.DataFrame:
     path = DATA_DIR / "fixtures.csv"
     if not path.exists():
         download_fixtures()
-    return _read_csv(path)
+    df = _read_csv(path)
+    return df[df["Div"].isin(LEAGUES)]
