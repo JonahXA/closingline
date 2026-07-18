@@ -1,0 +1,21 @@
+[project]
+name = "closingline"
+version = "0.1.0"
+description = "Live probabilistic football forecasts, publicly pre-registered and benchmarked against the sportsbook closing line."
+requires-python = ">=3.10"
+dependencies = [
+    "pandas>=2.0",
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "requests>=2.28",
+]
+
+[project.scripts]
+closingline = "closingline.__main__:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

@@ -1,0 +1,38 @@
+name: Daily forecasts
+
+on:
+  schedule:
+    - cron: "0 11 * * *"  # 11:00 UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install
+        run: pip install -e .
+
+      - name: Ingest data
+        run: closingline ingest
+
+      - name: Issue forecasts
+        run: closingline predict
+
+      - name: Commit new forecasts
+        run: |
+          git config user.name "closingline-bot"
+          git config user.email "actions@github.com"
+          git add predictions/
+          if ! git diff --cached --quiet; then
+            git commit -m "Forecasts issued $(date -u +%F)"
+            git push
+          fi
