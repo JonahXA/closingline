@@ -13,7 +13,14 @@ from pathlib import Path
 import pandas as pd
 
 from . import data
-from .zoo import build_models, fit_all
+from .zoo import (
+    ENSEMBLE_NAME,
+    build_components,
+    combine,
+    equal_weights,
+    fit_components,
+    fit_pool_weights,
+)
 
 PREDICTIONS_DIR = Path("predictions")
 
@@ -50,22 +57,34 @@ def run(horizon_days: int = 7) -> pd.DataFrame:
 
     rows = []
     generated_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    # Live ensemble weights come from the committed backtest report — all
+    # out-of-sample component predictions, nothing fit today.
+    bt_path = Path("reports/backtest.csv")
+    oos = pd.read_csv(bt_path) if bt_path.exists() else pd.DataFrame()
+
     for div in fixtures["Div"].unique():
-        models = build_models()
-        fit_all(models, results[results["Div"].isin(data.training_divisions(div))])
+        components = build_components()
+        names = [c.name for c in components]
+        fit_components(components, results[results["Div"].isin(data.training_divisions(div))])
+        weights = fit_pool_weights(oos, names) if not oos.empty else equal_weights(len(names))
         for _, fx in fixtures[fixtures["Div"] == div].iterrows():
-            for model in models:
-                p_home, p_draw, p_away = model.predict(fx["HomeTeam"], fx["AwayTeam"])
+            probs = []
+            for model in components:
+                p = model.predict(fx["HomeTeam"], fx["AwayTeam"])
+                probs.append(p)
+            for model_name, p in list(zip(names, probs)) + [
+                (ENSEMBLE_NAME, combine(probs, weights))
+            ]:
                 rows.append(
                     {
                         "Div": div,
                         "Date": fx["Date"].date().isoformat(),
                         "HomeTeam": fx["HomeTeam"],
                         "AwayTeam": fx["AwayTeam"],
-                        "p_home": round(p_home, 4),
-                        "p_draw": round(p_draw, 4),
-                        "p_away": round(p_away, 4),
-                        "model": model.name,
+                        "p_home": round(p[0], 4),
+                        "p_draw": round(p[1], 4),
+                        "p_away": round(p[2], 4),
+                        "model": model_name,
                         "generated_at": generated_at,
                     }
                 )

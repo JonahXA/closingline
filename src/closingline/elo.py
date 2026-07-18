@@ -21,6 +21,33 @@ from .model import DEFAULT_XI, MAX_GOALS
 START_RATING = 1500.0
 
 
+def elo_pass(
+    m: pd.DataFrame, k: float = 20.0, hfa: float = 60.0
+) -> tuple[np.ndarray, dict[str, float], dict[str, list[tuple[pd.Timestamp, float]]]]:
+    """Sequential margin-weighted Elo over `m` (chronological).
+
+    Returns (pre-match rating diffs / 400, final ratings, per-team rating
+    timeline as (date, rating-after-match) pairs).
+    """
+    ratings: dict[str, float] = {}
+    timeline: dict[str, list[tuple[pd.Timestamp, float]]] = {}
+    diffs = np.empty(len(m))
+    for i, (date, h, a, hg, ag) in enumerate(
+        zip(m["Date"], m["HomeTeam"], m["AwayTeam"], m["FTHG"], m["FTAG"])
+    ):
+        rh = ratings.get(h, START_RATING)
+        ra = ratings.get(a, START_RATING)
+        diffs[i] = (rh - ra) / 400.0
+        expected = 1.0 / (1.0 + 10 ** (-(rh + hfa - ra) / 400.0))
+        score = 1.0 if hg > ag else 0.5 if hg == ag else 0.0
+        delta = k * np.log1p(abs(hg - ag)) * (score - expected)
+        ratings[h] = rh + delta
+        ratings[a] = ra - delta
+        timeline.setdefault(h, []).append((date, ratings[h]))
+        timeline.setdefault(a, []).append((date, ratings[a]))
+    return diffs, ratings, timeline
+
+
 class EloPoisson:
     name = "elo-poisson"
 
@@ -36,20 +63,7 @@ class EloPoisson:
         as_of = as_of or dt.date.today()
         m = matches[matches["Date"] < pd.Timestamp(as_of)]
 
-        ratings: dict[str, float] = {}
-        diffs = np.empty(len(m))
-        for i, (h, a, hg, ag) in enumerate(
-            zip(m["HomeTeam"], m["AwayTeam"], m["FTHG"], m["FTAG"])
-        ):
-            rh = ratings.get(h, START_RATING)
-            ra = ratings.get(a, START_RATING)
-            diffs[i] = (rh - ra) / 400.0
-            expected = 1.0 / (1.0 + 10 ** (-(rh + self.hfa - ra) / 400.0))
-            score = 1.0 if hg > ag else 0.5 if hg == ag else 0.0
-            delta = self.k * np.log1p(abs(hg - ag)) * (score - expected)
-            ratings[h] = rh + delta
-            ratings[a] = ra - delta
-        self.ratings = ratings
+        diffs, self.ratings, _ = elo_pass(m, k=self.k, hfa=self.hfa)
 
         days = (pd.Timestamp(as_of) - m["Date"]).dt.days.to_numpy(dtype=float)
         w = np.exp(-self.xi * days)

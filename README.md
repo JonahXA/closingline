@@ -11,7 +11,7 @@ The research question, extending my [ML market-efficiency study of the 2026 Worl
 ## How it works
 
 1. **Ingest** — historical results and closing odds from [football-data.co.uk](https://www.football-data.co.uk), plus upcoming fixtures.
-2. **Model** — a small zoo: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay, plus an Elo-Poisson model (margin-weighted Elo ratings mapped to expected goals), pooled in an equal-weight log-linear ensemble. All fit per league (top flight + second division) by weighted MLE; every model's forecasts are published so each builds its own track record.
+2. **Model** — a zoo of three structurally different models: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay; Elo-Poisson (margin-weighted Elo ratings mapped to expected goals); and a gradient-boosted classifier over causal form features (rolling goals, points per game, rest days, Elo diff). They are pooled in a log-linear ensemble whose weights are fit only on out-of-sample predictions — earlier walk-forward windows in the backtest, the committed backtest report live — so the weighting never sees in-sample fits. Every model's forecasts are published so each builds its own track record.
 3. **Predict** — daily GitHub Actions run issues forecasts for fixtures in the next 7 days and commits them to [`predictions/`](predictions/). First issuance stands; nothing is overwritten.
 4. **Evaluate** — once results arrive, forecasts are scored with Brier score and log loss against de-vigged closing-line probabilities (Pinnacle closing preferred).
 
@@ -32,12 +32,13 @@ The dashboard is a static Next.js app in [`dashboard/`](dashboard/), rebuilt and
 
 | | Brier | Log loss |
 |---|---|---|
-| Dixon-Coles (primary) | 0.5874 | 0.9855 |
-| Ensemble (equal-weight log-pool) | 0.5885 | 0.9873 |
+| Dixon-Coles | 0.5874 | 0.9855 |
+| Ensemble (weighted log-pool, primary) | 0.5877 | 0.9859 |
 | Elo-Poisson | 0.5911 | 0.9914 |
+| Gradient boosting (form features) | 0.5953 | 0.9983 |
 | De-vigged closing line | 0.5734 | 0.9644 |
 
-The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap. Honest finding: the naive ensemble does **not** beat Dixon-Coles — Elo-Poisson is weaker and highly correlated, so equal-weight pooling dilutes the better model. All three models' forecasts are published daily so each builds its own live track record.
+The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap. Two honest findings so far: (1) an equal-weight pool dilutes the best model, and (2) the fix works — weights fit on out-of-sample history converge to ~100% Dixon-Coles, so the weighted ensemble matches it overall and edges it in 4 of 5 leagues once warmed up. The ensemble stays primary because it self-corrects: if any component starts adding value, the weights move on their own. All four tracks are published daily so each builds its own live record.
 
 ## Roadmap
 
@@ -45,8 +46,9 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Public dashboard (Next.js + Recharts on GitHub Pages) with calibration plots and league tables
 - [x] Handle promoted teams properly (train on second-division data)
 - [x] Walk-forward backtest suite across past seasons
-- [x] Model zoo v1: Elo-Poisson + equal-weight ensemble, all tracks published
-- [ ] Weighted / stacked ensembling; gradient-boosted feature model
+- [x] Model zoo: Elo-Poisson, gradient-boosted form model, weighted log-pool ensemble (weights fit on out-of-sample history only)
+- [x] Unit tests (feature causality, weight fitting, de-vig) in CI
+- [ ] Richer GBM features (shots/xG data, congestion, lineups) to earn nonzero pool weight
 - [ ] Expected-value analysis vs opening vs closing lines (CLV study)
 
 ## Disclaimer

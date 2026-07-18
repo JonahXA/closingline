@@ -16,7 +16,14 @@ import pandas as pd
 
 from . import data
 from .markets import implied_probs
-from .zoo import build_models, fit_all
+from .zoo import (
+    ENSEMBLE_NAME,
+    build_components,
+    combine,
+    equal_weights,
+    fit_components,
+    fit_pool_weights,
+)
 
 REPORTS_DIR = Path("reports")
 
@@ -27,41 +34,63 @@ def run(seasons: int = 3, refit_days: int = 28) -> pd.DataFrame:
     start = end - pd.Timedelta(days=int(365.25 * seasons))
 
     rows = []
+    component_rows = []  # OOS pool for causal ensemble-weight fitting
     for league in data.LEAGUES:
         pool = results[results["Div"].isin(data.training_divisions(league))]
         eval_m = results[(results["Div"] == league) & (results["Date"] >= start)]
-        models = build_models()
+        components = build_components()
+        names = [c.name for c in components]
+        weights = equal_weights(len(components))
         t = start
         while t < end:
             t_next = t + pd.Timedelta(days=refit_days)
             window = eval_m[(eval_m["Date"] >= t) & (eval_m["Date"] < t_next)]
             if not window.empty:
-                fit_all(models, pool, as_of=t.date())
+                fit_components(components, pool, as_of=t.date())
+                if component_rows:
+                    oos = pd.DataFrame(component_rows)
+                    # Only earlier-dated predictions may inform the weights.
+                    weights = fit_pool_weights(oos[oos["Date"] < t.date().isoformat()], names)
                 for _, r in window.iterrows():
                     mkt = implied_probs(r)
-                    for model in models:
-                        p_home, p_draw, p_away = model.predict(r["HomeTeam"], r["AwayTeam"])
-                        rows.append(
-                            {
-                                "model": model.name,
-                                "Div": league,
-                                "Date": r["Date"].date().isoformat(),
-                                "HomeTeam": r["HomeTeam"],
-                                "AwayTeam": r["AwayTeam"],
-                                "FTHG": r["FTHG"],
-                                "FTAG": r["FTAG"],
-                                "p_home": round(p_home, 4),
-                                "p_draw": round(p_draw, 4),
-                                "p_away": round(p_away, 4),
-                                "mkt_home": round(mkt[0], 4) if mkt else None,
-                                "mkt_draw": round(mkt[1], 4) if mkt else None,
-                                "mkt_away": round(mkt[2], 4) if mkt else None,
-                                "odds_source": mkt[3] if mkt else None,
-                                "as_of": t.date().isoformat(),
-                            }
-                        )
+                    base = {
+                        "Div": league,
+                        "Date": r["Date"].date().isoformat(),
+                        "HomeTeam": r["HomeTeam"],
+                        "AwayTeam": r["AwayTeam"],
+                        "FTHG": r["FTHG"],
+                        "FTAG": r["FTAG"],
+                        "mkt_home": round(mkt[0], 4) if mkt else None,
+                        "mkt_draw": round(mkt[1], 4) if mkt else None,
+                        "mkt_away": round(mkt[2], 4) if mkt else None,
+                        "odds_source": mkt[3] if mkt else None,
+                        "as_of": t.date().isoformat(),
+                    }
+                    probs = []
+                    for model in components:
+                        p = model.predict(r["HomeTeam"], r["AwayTeam"])
+                        probs.append(p)
+                        row = {
+                            "model": model.name,
+                            **base,
+                            "p_home": round(p[0], 4),
+                            "p_draw": round(p[1], 4),
+                            "p_away": round(p[2], 4),
+                        }
+                        rows.append(row)
+                        component_rows.append(row)
+                    e = combine(probs, weights)
+                    rows.append(
+                        {
+                            "model": ENSEMBLE_NAME,
+                            **base,
+                            "p_home": round(e[0], 4),
+                            "p_draw": round(e[1], 4),
+                            "p_away": round(e[2], 4),
+                        }
+                    )
             t = t_next
-        print(f"{league}: done")
+        print(f"{league}: done, final pool weights {dict(zip(names, np.round(weights, 3)))}")
 
     out = pd.DataFrame(rows)
     REPORTS_DIR.mkdir(exist_ok=True)

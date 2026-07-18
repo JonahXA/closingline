@@ -16,7 +16,8 @@ type Summary = {
 const MODEL_NAMES: Record<string, string> = {
   "dixon-coles": "Dixon-Coles",
   "elo-poisson": "Elo-Poisson",
-  ensemble: "Ensemble (log-pool)",
+  gbm: "Gradient boosting (form features)",
+  ensemble: "Ensemble (weighted log-pool)",
 };
 
 type Upcoming = {
@@ -184,8 +185,9 @@ export default function Home() {
               <p className="sub">
                 All leagues pooled. The starred model drives the headline stats and charts above;
                 every model&apos;s forecasts are published daily, so each builds its own public
-                track record. Honest finding so far: the equal-weight ensemble does not beat
-                Dixon-Coles — weighted pooling is on the roadmap.
+                track record. The ensemble&apos;s weights are fit purely on out-of-sample history
+                and have converged to ~100% Dixon-Coles — it stays primary because it
+                self-corrects the moment any component starts adding value.
               </p>
               <table>
                 <thead>
