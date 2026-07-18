@@ -24,6 +24,13 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Cache match data
+        uses: actions/cache@v4
+        with:
+          path: data/raw
+          key: football-data-${{ github.run_id }}
+          restore-keys: football-data-
+
       - name: Export dashboard data
         run: |
           pip install -e .

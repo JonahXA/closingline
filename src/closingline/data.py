@@ -3,10 +3,19 @@
 from __future__ import annotations
 
 import datetime as dt
+import time
 from pathlib import Path
 
 import pandas as pd
 import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+
+_session = requests.Session()
+_session.mount(
+    "https://",
+    HTTPAdapter(max_retries=Retry(total=4, backoff_factor=2, status_forcelist=[429, 500, 502, 503])),
+)
 
 BASE_URL = "https://www.football-data.co.uk/mmz4281"
 FIXTURES_URL = "https://www.football-data.co.uk/fixtures.csv"
@@ -58,17 +67,22 @@ def download_history(seasons: int = ARCHIVE_SEASONS) -> None:
             if dest.exists() and start_year < current - 1:
                 continue
             url = f"{BASE_URL}/{code}/{div}.csv"
-            resp = requests.get(url, timeout=30)
+            try:
+                resp = _session.get(url, timeout=30)
+            except requests.ConnectionError:
+                time.sleep(5)  # be polite after a reset, then retry once
+                resp = _session.get(url, timeout=30)
             if resp.status_code == 404 or len(resp.content) < 100:
                 continue
             resp.raise_for_status()
             dest.write_bytes(resp.content)
+            time.sleep(0.25)
 
 
 def download_fixtures() -> Path:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     dest = DATA_DIR / "fixtures.csv"
-    resp = requests.get(FIXTURES_URL, timeout=30)
+    resp = _session.get(FIXTURES_URL, timeout=30)
     resp.raise_for_status()
     dest.write_bytes(resp.content)
     return dest
