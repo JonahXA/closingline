@@ -10,7 +10,7 @@ The research question, extending my [ML market-efficiency study of the 2026 Worl
 
 ## How it works
 
-1. **Ingest** — historical results and closing odds from [football-data.co.uk](https://www.football-data.co.uk), plus upcoming fixtures.
+1. **Ingest** — historical results and closing odds from [football-data.co.uk](https://www.football-data.co.uk), per-match xG from [Understat](https://understat.com), plus upcoming fixtures.
 2. **Model** — a zoo of three structurally different models: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay; Elo-Poisson (margin-weighted Elo ratings mapped to expected goals); and a gradient-boosted classifier over causal form features (rolling goals, points per game, rest days, Elo diff). They are pooled in a log-linear ensemble whose weights are fit only on out-of-sample predictions — earlier walk-forward windows in the backtest, the committed backtest report live — so the weighting never sees in-sample fits. Every model's forecasts are published so each builds its own track record.
 3. **Predict** — daily GitHub Actions run issues forecasts for fixtures in the next 7 days and commits them to [`predictions/`](predictions/). First issuance stands; nothing is overwritten.
 4. **Evaluate** — once results arrive, forecasts are scored with Brier score and log loss against de-vigged closing-line probabilities (Pinnacle closing preferred).
@@ -32,10 +32,10 @@ The dashboard is a static Next.js app in [`dashboard/`](dashboard/), rebuilt and
 
 | | Brier | Log loss |
 |---|---|---|
+| **Ensemble (weighted log-pool, primary)** | **0.5867** | **0.9846** |
 | Dixon-Coles | 0.5874 | 0.9855 |
-| Ensemble (weighted log-pool, primary) | 0.5877 | 0.9859 |
 | Elo-Poisson | 0.5911 | 0.9914 |
-| Gradient boosting (form features) | 0.5953 | 0.9983 |
+| Gradient boosting (form + xG features) | 0.5931 | 0.9955 |
 | De-vigged closing line | 0.5734 | 0.9644 |
 
 The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap.
@@ -44,7 +44,7 @@ The market wins everywhere — for now. The size of the gap is the research resu
 
 1. **A well-built classical model gets within ~2.5% of the market, and is well calibrated** — the market's edge is information, not math.
 2. **Equal-weight ensembling dilutes the best model; OOS-fitted weights fix it** — they converge to ~100% Dixon-Coles on their own. The ensemble stays primary because it self-corrects if any component starts adding value.
-3. **Neither generic form features nor shots-on-target form add information beyond goals** — the GBM earned ~0 pool weight both times. Recovering more of the market's edge needs data of a different kind (true xG, lineups).
+3. **Neither generic form features nor shots-on-target form add information beyond goals** — the GBM earned ~0 pool weight both times. **True xG does**: with Understat per-match xG features the GBM earns 25–29% of the pool in every league, and the ensemble beats Dixon-Coles everywhere (0.5867 vs 0.5874) — the first model improvement over the classical baseline, cutting the gap to the market from +2.44% to +2.32%.
 4. **The market's edge is not late-breaking news** (CLV study, `closingline clv`): the opening line (Brier 0.5747) is nearly as sharp as the close (0.5734), our model loses to both by similar margins, and the model has zero ability to predict line movement (r = −0.02, sign agreement 48%). Whatever the market knows, it knows days before kickoff — and it is already public information our goals-only models fail to extract.
 
 ## Roadmap
@@ -57,7 +57,7 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Unit tests (feature causality, weight fitting, de-vig) in CI
 - [x] Shots-on-target features for the GBM (negative result — no added information)
 - [x] CLV study: opening vs closing vs model, line-movement prediction
-- [ ] True xG data (Understat/FBref) — the main remaining candidate for closing the gap
+- [x] True xG data (Understat) — GBM earns ~26% pool weight; ensemble beats Dixon-Coles in every league
 - [ ] Season-opening weakness: promotion-aware priors or early-season shrinkage toward market baseline
 - [ ] Live-season report after matchweek 10: pre-registered forecasts vs the market
 

@@ -31,6 +31,9 @@ class GradientBoosted:
         self._outcome: np.ndarray | None = None
 
     def _build_cache(self, matches: pd.DataFrame) -> None:
+        from .xg import attach_xg
+
+        matches = attach_xg(matches)
         self._features, self._hist = build_features(matches)
         _, _, self._elo_timeline = elo_pass(matches)
         self._outcome = np.select(

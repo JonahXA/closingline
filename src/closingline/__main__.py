@@ -20,10 +20,11 @@ def main() -> None:
 
     args = parser.parse_args()
     if args.command == "ingest":
-        from . import data
+        from . import data, xg
 
         data.download_history()
         data.download_fixtures()
+        xg.download_xg()
         print("Ingest complete.")
     elif args.command == "predict":
         from . import predict
