@@ -44,6 +44,14 @@ const data = raw as unknown as {
     end: string;
   } | null;
   live: { upcoming: Upcoming[]; scored: unknown[]; summary?: Summary[] };
+  clv?: {
+    matches: number;
+    model_brier: number;
+    opening_brier: number;
+    closing_brier: number;
+    movement_corr: number;
+    movement_sign_agreement: number;
+  };
 };
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
@@ -236,6 +244,47 @@ export default function Home() {
             <Monthly rows={bt.monthly} />
           </section>
         </>
+      )}
+
+      {data.clv && (
+        <section className="card">
+          <h2>Where the market&apos;s edge lives</h2>
+          <p className="sub">
+            Opening line (days before kickoff) vs closing line vs model, same{" "}
+            {data.clv.matches.toLocaleString()} matches.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Forecast</th>
+                <th>Brier</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Closing line</td>
+                <td>{data.clv.closing_brier.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>Opening line</td>
+                <td>{data.clv.opening_brier.toFixed(4)}</td>
+              </tr>
+              <tr>
+                <td>ClosingLine model</td>
+                <td>{data.clv.model_brier.toFixed(4)}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="sub" style={{ marginTop: 14, marginBottom: 0 }}>
+            Three implications. The market barely improves from open to close, so its edge is not
+            last-minute team news — whatever it knows, it knows days early. Our model loses to the
+            opening line almost as badly as to the close, so the missing information is already
+            public well before kickoff. And the model does not predict line movement (correlation{" "}
+            {data.clv.movement_corr.toFixed(2)}, sign agreement{" "}
+            {Math.round(data.clv.movement_sign_agreement * 100)}% — a coin flip): there is no
+            exploitable signal in disagreeing with the opening line.
+          </p>
+        </section>
       )}
 
       <section className="card">

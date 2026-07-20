@@ -95,6 +95,10 @@ def run() -> None:
             "end": bt["Date"].max(),
         }
 
+    clv_path = REPORTS_DIR / "clv.csv"
+    if clv_path.exists():
+        payload["clv"] = pd.read_csv(clv_path).iloc[0].to_dict()
+
     preds = load_all_predictions()
     if not preds.empty:
         preds = preds[preds["model"] == PRIMARY_MODEL]

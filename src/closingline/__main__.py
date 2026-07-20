@@ -16,6 +16,7 @@ def main() -> None:
     b.add_argument("--seasons", type=int, default=3)
     b.add_argument("--refit-days", type=int, default=28)
     sub.add_parser("export", help="Export dashboard data JSON from reports and predictions")
+    sub.add_parser("clv", help="Closing-line-value study from the backtest report")
 
     args = parser.parse_args()
     if args.command == "ingest":
@@ -45,6 +46,10 @@ def main() -> None:
         from . import export
 
         export.run()
+    elif args.command == "clv":
+        from . import clv
+
+        clv.run()
 
 
 if __name__ == "__main__":

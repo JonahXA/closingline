@@ -33,6 +33,8 @@ def synthetic_matches(n_rounds: int = 40, seed: int = 0) -> pd.DataFrame:
                         "AwayTeam": away,
                         "FTHG": rng.poisson(strength[home] * 1.2),
                         "FTAG": rng.poisson(strength[away]),
+                        "HST": rng.poisson(strength[home] * 4),
+                        "AST": rng.poisson(strength[away] * 4),
                     }
                 )
                 date += pd.Timedelta(days=1)

@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-18T20:37:33+00:00",
+ "generated_at": "2026-07-20T03:53:41+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -14,18 +14,18 @@
     "model": "ensemble",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5877,
+    "model_brier": 0.5879,
     "market_brier": 0.5734,
-    "model_logloss": 0.9859,
+    "model_logloss": 0.9862,
     "market_logloss": 0.9644
    },
    {
     "model": "ensemble",
     "league": "D1",
     "matches": 918,
-    "model_brier": 0.5864,
+    "model_brier": 0.5865,
     "market_brier": 0.5703,
-    "model_logloss": 0.9856,
+    "model_logloss": 0.9858,
     "market_logloss": 0.9616
    },
    {
@@ -34,34 +34,34 @@
     "matches": 1140,
     "model_brier": 0.5922,
     "market_brier": 0.5702,
-    "model_logloss": 0.9925,
+    "model_logloss": 0.9922,
     "market_logloss": 0.9603
    },
    {
     "model": "ensemble",
     "league": "F1",
     "matches": 928,
-    "model_brier": 0.5988,
+    "model_brier": 0.599,
     "market_brier": 0.5887,
-    "model_logloss": 1.0018,
+    "model_logloss": 1.002,
     "market_logloss": 0.9863
    },
    {
     "model": "ensemble",
     "league": "I1",
     "matches": 1150,
-    "model_brier": 0.5845,
+    "model_brier": 0.5847,
     "market_brier": 0.5733,
-    "model_logloss": 0.9792,
+    "model_logloss": 0.9794,
     "market_logloss": 0.9618
    },
    {
     "model": "ensemble",
     "league": "SP1",
     "matches": 1150,
-    "model_brier": 0.5785,
+    "model_brier": 0.5791,
     "market_brier": 0.5666,
-    "model_logloss": 0.9736,
+    "model_logloss": 0.9745,
     "market_logloss": 0.9556
    }
   ],
@@ -88,18 +88,18 @@
     "model": "gbm",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5953,
+    "model_brier": 0.5951,
     "market_brier": 0.5734,
-    "model_logloss": 0.9983,
+    "model_logloss": 0.998,
     "market_logloss": 0.9644
    },
    {
     "model": "ensemble",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5877,
+    "model_brier": 0.5879,
     "market_brier": 0.5734,
-    "model_logloss": 0.9859,
+    "model_logloss": 0.9862,
     "market_logloss": 0.9644
    }
   ],
@@ -107,140 +107,140 @@
    {
     "bin_mid": 0.05,
     "predicted": 0.0751,
-    "observed": 0.0678,
-    "n": 354
+    "observed": 0.0667,
+    "n": 360
    },
    {
     "bin_mid": 0.15,
-    "predicted": 0.1597,
-    "observed": 0.137,
-    "n": 2183
+    "predicted": 0.1594,
+    "observed": 0.1375,
+    "n": 2175
    },
    {
     "bin_mid": 0.25,
-    "predicted": 0.2527,
-    "observed": 0.2633,
-    "n": 6169
+    "predicted": 0.2525,
+    "observed": 0.2629,
+    "n": 6180
    },
    {
     "bin_mid": 0.35,
-    "predicted": 0.3432,
-    "observed": 0.3286,
-    "n": 2739
+    "predicted": 0.3431,
+    "observed": 0.3263,
+    "n": 2715
    },
    {
     "bin_mid": 0.45,
-    "predicted": 0.4486,
-    "observed": 0.4548,
-    "n": 1838
+    "predicted": 0.4484,
+    "observed": 0.4604,
+    "n": 1844
    },
    {
     "bin_mid": 0.55,
-    "predicted": 0.5455,
-    "observed": 0.5375,
-    "n": 1293
+    "predicted": 0.5453,
+    "observed": 0.5332,
+    "n": 1294
    },
    {
     "bin_mid": 0.65,
-    "predicted": 0.6444,
+    "predicted": 0.6441,
     "observed": 0.6712,
-    "n": 809
+    "n": 812
    },
    {
     "bin_mid": 0.75,
-    "predicted": 0.7429,
-    "observed": 0.7534,
-    "n": 373
+    "predicted": 0.7424,
+    "observed": 0.7487,
+    "n": 374
    },
    {
     "bin_mid": 0.85,
-    "predicted": 0.8322,
-    "observed": 0.8438,
-    "n": 96
+    "predicted": 0.8318,
+    "observed": 0.85,
+    "n": 100
    }
   ],
   "monthly": [
    {
     "month": "2023-06",
-    "model_brier": 0.6289,
+    "model_brier": 0.636,
     "market_brier": 0.6442,
     "n": 30
    },
    {
     "month": "2023-08",
-    "model_brier": 0.5845,
+    "model_brier": 0.5896,
     "market_brier": 0.5713,
     "n": 124
    },
    {
     "month": "2023-09",
-    "model_brier": 0.5755,
+    "model_brier": 0.5754,
     "market_brier": 0.5611,
     "n": 189
    },
    {
     "month": "2023-10",
-    "model_brier": 0.551,
+    "model_brier": 0.5539,
     "market_brier": 0.5285,
     "n": 165
    },
    {
     "month": "2023-11",
-    "model_brier": 0.6146,
+    "model_brier": 0.6136,
     "market_brier": 0.5909,
     "n": 144
    },
    {
     "month": "2023-12",
-    "model_brier": 0.5781,
+    "model_brier": 0.5789,
     "market_brier": 0.5593,
     "n": 230
    },
    {
     "month": "2024-01",
-    "model_brier": 0.5764,
+    "model_brier": 0.5762,
     "market_brier": 0.5623,
     "n": 140
    },
    {
     "month": "2024-02",
-    "model_brier": 0.5963,
+    "model_brier": 0.5958,
     "market_brier": 0.5871,
     "n": 199
    },
    {
     "month": "2024-03",
-    "model_brier": 0.5794,
+    "model_brier": 0.5784,
     "market_brier": 0.5713,
     "n": 180
    },
    {
     "month": "2024-04",
-    "model_brier": 0.5892,
+    "model_brier": 0.5897,
     "market_brier": 0.5793,
     "n": 202
    },
    {
     "month": "2024-05",
-    "model_brier": 0.577,
+    "model_brier": 0.5768,
     "market_brier": 0.5435,
     "n": 178
    },
    {
     "month": "2024-06",
-    "model_brier": 0.9238,
+    "model_brier": 0.9252,
     "market_brier": 1.0921,
     "n": 1
    },
    {
     "month": "2024-08",
-    "model_brier": 0.5703,
+    "model_brier": 0.5691,
     "market_brier": 0.5757,
     "n": 125
    },
    {
     "month": "2024-09",
-    "model_brier": 0.5658,
+    "model_brier": 0.566,
     "market_brier": 0.553,
     "n": 174
    },
@@ -252,25 +252,25 @@
    },
    {
     "month": "2024-11",
-    "model_brier": 0.5832,
+    "model_brier": 0.5845,
     "market_brier": 0.5693,
     "n": 167
    },
    {
     "month": "2024-12",
-    "model_brier": 0.6099,
+    "model_brier": 0.6097,
     "market_brier": 0.5822,
     "n": 199
    },
    {
     "month": "2025-01",
-    "model_brier": 0.6107,
+    "model_brier": 0.6105,
     "market_brier": 0.5919,
     "n": 185
    },
    {
     "month": "2025-02",
-    "model_brier": 0.5634,
+    "model_brier": 0.563,
     "market_brier": 0.5515,
     "n": 196
    },
@@ -348,7 +348,7 @@
    },
    {
     "month": "2026-05",
-    "model_brier": 0.6373,
+    "model_brier": 0.6372,
     "market_brier": 0.6237,
     "n": 187
    }
@@ -359,5 +359,16 @@
  "live": {
   "upcoming": [],
   "scored": []
+ },
+ "clv": {
+  "matches": 5286.0,
+  "model_brier": 0.5879,
+  "opening_brier": 0.5747,
+  "closing_brier": 0.5734,
+  "model_logloss": 0.9862,
+  "opening_logloss": 0.9665,
+  "closing_logloss": 0.9644,
+  "movement_corr": -0.0195,
+  "movement_sign_agreement": 0.4822
  }
 }

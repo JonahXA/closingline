@@ -38,7 +38,14 @@ The dashboard is a static Next.js app in [`dashboard/`](dashboard/), rebuilt and
 | Gradient boosting (form features) | 0.5953 | 0.9983 |
 | De-vigged closing line | 0.5734 | 0.9644 |
 
-The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap. Two honest findings so far: (1) an equal-weight pool dilutes the best model, and (2) the fix works — weights fit on out-of-sample history converge to ~100% Dixon-Coles, so the weighted ensemble matches it overall and edges it in 4 of 5 leagues once warmed up. The ensemble stays primary because it self-corrects: if any component starts adding value, the weights move on their own. All four tracks are published daily so each builds its own live record.
+The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap.
+
+### Findings so far
+
+1. **A well-built classical model gets within ~2.5% of the market, and is well calibrated** — the market's edge is information, not math.
+2. **Equal-weight ensembling dilutes the best model; OOS-fitted weights fix it** — they converge to ~100% Dixon-Coles on their own. The ensemble stays primary because it self-corrects if any component starts adding value.
+3. **Neither generic form features nor shots-on-target form add information beyond goals** — the GBM earned ~0 pool weight both times. Recovering more of the market's edge needs data of a different kind (true xG, lineups).
+4. **The market's edge is not late-breaking news** (CLV study, `closingline clv`): the opening line (Brier 0.5747) is nearly as sharp as the close (0.5734), our model loses to both by similar margins, and the model has zero ability to predict line movement (r = −0.02, sign agreement 48%). Whatever the market knows, it knows days before kickoff — and it is already public information our goals-only models fail to extract.
 
 ## Roadmap
 
@@ -48,8 +55,11 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Walk-forward backtest suite across past seasons
 - [x] Model zoo: Elo-Poisson, gradient-boosted form model, weighted log-pool ensemble (weights fit on out-of-sample history only)
 - [x] Unit tests (feature causality, weight fitting, de-vig) in CI
-- [ ] Richer GBM features (shots/xG data, congestion, lineups) to earn nonzero pool weight
-- [ ] Expected-value analysis vs opening vs closing lines (CLV study)
+- [x] Shots-on-target features for the GBM (negative result — no added information)
+- [x] CLV study: opening vs closing vs model, line-movement prediction
+- [ ] True xG data (Understat/FBref) — the main remaining candidate for closing the gap
+- [ ] Season-opening weakness: promotion-aware priors or early-season shrinkage toward market baseline
+- [ ] Live-season report after matchweek 10: pre-registered forecasts vs the market
 
 ## Disclaimer
 

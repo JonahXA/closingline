@@ -1,0 +1,2 @@
+matches,model_brier,opening_brier,closing_brier,model_logloss,opening_logloss,closing_logloss,movement_corr,movement_sign_agreement
+5286,0.5879,0.5747,0.5734,0.9862,0.9665,0.9644,-0.0195,0.4822

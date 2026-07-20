@@ -6,20 +6,29 @@ import pandas as pd
 
 # Preference order: Pinnacle closing, Bet365 closing, Pinnacle, Bet365,
 # then market averages. Each entry is (home, draw, away) column names.
-ODDS_SOURCES = [
+CLOSING_SOURCES = [
     ("PSCH", "PSCD", "PSCA"),
     ("B365CH", "B365CD", "B365CA"),
+    ("AvgCH", "AvgCD", "AvgCA"),
+]
+
+# Pre-closing odds, collected days before kickoff — the "opening" side of
+# the line-movement analysis.
+OPENING_SOURCES = [
     ("PSH", "PSD", "PSA"),
     ("B365H", "B365D", "B365A"),
-    ("AvgCH", "AvgCD", "AvgCA"),
     ("AvgH", "AvgD", "AvgA"),
 ]
 
+ODDS_SOURCES = CLOSING_SOURCES[:2] + OPENING_SOURCES[:2] + [CLOSING_SOURCES[2], OPENING_SOURCES[2]]
 
-def implied_probs(row: pd.Series) -> tuple[float, float, float, str] | None:
+
+def implied_probs(
+    row: pd.Series, sources: list[tuple[str, str, str]] = ODDS_SOURCES
+) -> tuple[float, float, float, str] | None:
     """Best available (p_home, p_draw, p_away, source), vig removed
     proportionally. None if the row carries no usable odds."""
-    for h, d, a in ODDS_SOURCES:
+    for h, d, a in sources:
         if h in row.index and pd.notna(row[h]) and pd.notna(row[d]) and pd.notna(row[a]):
             raw = [1 / row[h], 1 / row[d], 1 / row[a]]
             total = sum(raw)
