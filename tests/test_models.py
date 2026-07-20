@@ -108,6 +108,16 @@ def test_pool_weights_prefer_better_model():
     assert w[0] > 0.8
 
 
+def test_xgdc_falls_back_to_goals_without_xg_data():
+    from closingline.xgdc import XgDixonColes
+
+    m = synthetic_matches()
+    as_of = m["Date"].max().date() + dt.timedelta(days=1)
+    dc = DixonColes().fit(m, as_of=as_of)
+    xgdc = XgDixonColes().fit(m, as_of=as_of)  # synthetic teams have no xG
+    assert np.allclose(dc.predict("Strong", "Weak"), xgdc.predict("Strong", "Weak"), atol=1e-6)
+
+
 def test_implied_probs_devig_and_source_preference():
     row = pd.Series({"PSCH": 2.0, "PSCD": 3.5, "PSCA": 4.0, "B365H": 1.9, "B365D": 3.4, "B365A": 3.9})
     p_home, p_draw, p_away, source = implied_probs(row)

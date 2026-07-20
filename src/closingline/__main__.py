@@ -17,6 +17,9 @@ def main() -> None:
     b.add_argument("--refit-days", type=int, default=28)
     sub.add_parser("export", help="Export dashboard data JSON from reports and predictions")
     sub.add_parser("clv", help="Closing-line-value study from the backtest report")
+    sub.add_parser("bias", help="Scan the backtest for market soft spots by bucket")
+    p2 = sub.add_parser("paper", help="Log/settle hypothetical value bets (no real wagering)")
+    p2.add_argument("--settle", action="store_true", help="Score settled bets instead of logging")
 
     args = parser.parse_args()
     if args.command == "ingest":
@@ -51,6 +54,18 @@ def main() -> None:
         from . import clv
 
         clv.run()
+    elif args.command == "bias":
+        from . import bias
+
+        bias.run()
+    elif args.command == "paper":
+        from . import paper
+
+        if args.settle:
+            paper.settle()
+        else:
+            out = paper.log_bets()
+            print(f"Logged {len(out)} hypothetical bets." if not out.empty else "No value edges found.")
 
 
 if __name__ == "__main__":

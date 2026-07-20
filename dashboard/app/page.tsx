@@ -17,6 +17,7 @@ const MODEL_NAMES: Record<string, string> = {
   "dixon-coles": "Dixon-Coles",
   "elo-poisson": "Elo-Poisson",
   gbm: "Gradient boosting (form + xG)",
+  "xg-dixon-coles": "Dixon-Coles on goals/xG blend",
   ensemble: "Ensemble (weighted log-pool)",
 };
 
@@ -193,10 +194,9 @@ export default function Home() {
               <p className="sub">
                 All leagues pooled. The starred model drives the headline stats and charts above;
                 every model&apos;s forecasts are published daily, so each builds its own public
-                track record. The ensemble&apos;s weights are fit purely on out-of-sample history:
-                with Understat xG features the gradient-boosted model now earns ~25% of the pool,
-                and the ensemble beats every individual component — including Dixon-Coles, in all
-                five leagues.
+                track record. The ensemble&apos;s weights are fit purely on out-of-sample
+                history — currently ~75% Dixon-Coles-on-xG (the best single model), ~23%
+                gradient boosting, with goals-only Dixon-Coles and Elo priced out of the pool.
               </p>
               <table>
                 <thead>
@@ -291,12 +291,13 @@ export default function Home() {
       <section className="card">
         <h2>Method</h2>
         <p className="sub" style={{ marginBottom: 0 }}>
-          Three structurally different models — Dixon-Coles (1997) bivariate Poisson with
-          low-score dependence correction and exponential time decay (half-life ≈ 1 year), an
-          Elo-Poisson model (goal-margin-weighted Elo ratings mapped to expected goals by Poisson
-          regression), and a gradient-boosted classifier over causal form and Understat xG
-          features — combined in a log-linear pool whose weights are fit only on out-of-sample
-          predictions. All fit per league on
+          Four structurally different models — Dixon-Coles (1997) bivariate Poisson with
+          low-score dependence correction and exponential time decay (half-life ≈ 1 year), the
+          same structure fit on a 50/50 goals/xG blend, an Elo-Poisson model
+          (goal-margin-weighted Elo ratings mapped to expected goals by Poisson regression), and
+          a gradient-boosted classifier over causal form and Understat xG features — combined in
+          a log-linear pool whose weights are fit only on out-of-sample predictions. All fit per
+          league on
           top-flight and second-division results, so promoted teams carry real parameters.
           Backtests are strictly walk-forward: each forecast uses only information available
           before its refit date. Market probabilities are de-vigged closing odds, Pinnacle

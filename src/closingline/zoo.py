@@ -17,6 +17,7 @@ from scipy.optimize import minimize
 from .elo import EloPoisson
 from .gbm import GradientBoosted
 from .model import DixonColes
+from .xgdc import XgDixonColes
 
 ENSEMBLE_NAME = "ensemble"
 
@@ -29,7 +30,7 @@ P_COLS = ["p_home", "p_draw", "p_away"]
 
 
 def build_components() -> list:
-    return [DixonColes(), EloPoisson(), GradientBoosted()]
+    return [DixonColes(), EloPoisson(), GradientBoosted(), XgDixonColes()]
 
 
 def fit_components(components: list, matches: pd.DataFrame, as_of=None) -> None:
