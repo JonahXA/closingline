@@ -53,6 +53,17 @@ const data = raw as unknown as {
     movement_corr: number;
     movement_sign_agreement: number;
   };
+  significance?: {
+    comparison: string;
+    metric: string;
+    matches: number;
+    mean_diff: number;
+    ci_low: number;
+    ci_high: number;
+    p_bootstrap: number;
+    dm_stat: number;
+    p_dm: number;
+  }[];
 };
 
 const pct = (v: number) => `${Math.round(v * 100)}%`;
@@ -285,6 +296,54 @@ export default function Home() {
             {data.clv.movement_corr.toFixed(2)}, sign agreement{" "}
             {Math.round(data.clv.movement_sign_agreement * 100)}% — a coin flip): there is no
             exploitable signal in disagreeing with the opening line.
+          </p>
+        </section>
+      )}
+
+      {data.significance && data.significance.length > 0 && (
+        <section className="card">
+          <h2>Is the gap real? Significance tests</h2>
+          <p className="sub">
+            Both claims tested on per-match Brier differentials over{" "}
+            {data.significance[0].matches.toLocaleString()} matches — paired bootstrap (10,000
+            resamples) for a distribution-free 95% CI, and a Diebold-Mariano test with a
+            Newey-West (HAC) variance so same-round score correlation doesn&apos;t understate the
+            error. A differential whose CI excludes zero is significant.
+          </p>
+          <div className="chart-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>Comparison (Brier)</th>
+                  <th>Mean diff</th>
+                  <th>95% CI</th>
+                  <th>p (bootstrap)</th>
+                  <th>p (DM)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {data.significance
+                  .filter((s) => s.metric === "brier")
+                  .map((s) => (
+                    <tr key={s.comparison}>
+                      <td>{s.comparison}</td>
+                      <td>{s.mean_diff > 0 ? "+" : ""}{s.mean_diff.toFixed(4)}</td>
+                      <td>
+                        [{s.ci_low.toFixed(4)}, {s.ci_high.toFixed(4)}]
+                      </td>
+                      <td>{s.p_bootstrap < 0.001 ? "<0.001" : s.p_bootstrap.toFixed(3)}</td>
+                      <td>{s.p_dm < 0.001 ? "<0.001" : s.p_dm.toFixed(3)}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
+          <p className="sub" style={{ marginTop: 14, marginBottom: 0 }}>
+            The market&apos;s edge over the model is real, not noise (p &lt; 0.001) — so the
+            residual gap is a genuine research target, not sampling luck. And fitting the classical
+            model on xG instead of goals is a statistically significant improvement (CI excludes
+            zero on both metrics), confirming the one feature change that moved the needle was a
+            real gain rather than a lucky draw.
           </p>
         </section>
       )}

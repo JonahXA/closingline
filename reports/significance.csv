@@ -1,0 +1,5 @@
+comparison,metric,matches,mean_diff,ci_low,ci_high,p_bootstrap,dm_stat,p_dm
+ensemble vs closing line,brier,5286,0.01198,0.00918,0.01477,0.0,8.41,0.0
+xg-dixon-coles vs dixon-coles,brier,5286,-0.0024,-0.00365,-0.00111,0.0002,-3.555,0.0004
+ensemble vs closing line,logloss,5286,0.01817,0.01402,0.02228,0.0,8.825,0.0
+xg-dixon-coles vs dixon-coles,logloss,5286,-0.00335,-0.00523,-0.00146,0.001,-3.436,0.0006

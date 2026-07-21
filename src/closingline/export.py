@@ -99,6 +99,10 @@ def run() -> None:
     if clv_path.exists():
         payload["clv"] = pd.read_csv(clv_path).iloc[0].to_dict()
 
+    sig_path = REPORTS_DIR / "significance.csv"
+    if sig_path.exists():
+        payload["significance"] = pd.read_csv(sig_path).to_dict(orient="records")
+
     preds = load_all_predictions()
     if not preds.empty:
         preds = preds[preds["model"] == PRIMARY_MODEL]

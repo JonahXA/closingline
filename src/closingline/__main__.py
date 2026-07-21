@@ -19,6 +19,7 @@ def main() -> None:
     sub.add_parser("clv", help="Closing-line-value study from the backtest report")
     sub.add_parser("bias", help="Scan the backtest for market soft spots by bucket")
     sub.add_parser("sweep", help="Walk-forward hyperparameter sweep for xG-Dixon-Coles")
+    sub.add_parser("significance", help="Paired bootstrap + Diebold-Mariano tests on score gaps")
     p2 = sub.add_parser("paper", help="Log/settle hypothetical value bets (no real wagering)")
     p2.add_argument("--settle", action="store_true", help="Score settled bets instead of logging")
 
@@ -64,6 +65,10 @@ def main() -> None:
         from . import sweep
 
         sweep.run()
+    elif args.command == "significance":
+        from . import significance
+
+        significance.run()
     elif args.command == "paper":
         from . import paper
 

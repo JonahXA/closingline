@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-21T15:53:05+00:00",
+ "generated_at": "2026-07-21T22:47:03+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -379,5 +379,51 @@
   "closing_logloss": 0.9644,
   "movement_corr": -0.0133,
   "movement_sign_agreement": 0.4736
- }
+ },
+ "significance": [
+  {
+   "comparison": "ensemble vs closing line",
+   "metric": "brier",
+   "matches": 5286,
+   "mean_diff": 0.01198,
+   "ci_low": 0.00918,
+   "ci_high": 0.01477,
+   "p_bootstrap": 0.0,
+   "dm_stat": 8.41,
+   "p_dm": 0.0
+  },
+  {
+   "comparison": "xg-dixon-coles vs dixon-coles",
+   "metric": "brier",
+   "matches": 5286,
+   "mean_diff": -0.0024,
+   "ci_low": -0.00365,
+   "ci_high": -0.00111,
+   "p_bootstrap": 0.0002,
+   "dm_stat": -3.555,
+   "p_dm": 0.0004
+  },
+  {
+   "comparison": "ensemble vs closing line",
+   "metric": "logloss",
+   "matches": 5286,
+   "mean_diff": 0.01817,
+   "ci_low": 0.01402,
+   "ci_high": 0.02228,
+   "p_bootstrap": 0.0,
+   "dm_stat": 8.825,
+   "p_dm": 0.0
+  },
+  {
+   "comparison": "xg-dixon-coles vs dixon-coles",
+   "metric": "logloss",
+   "matches": 5286,
+   "mean_diff": -0.00335,
+   "ci_low": -0.00523,
+   "ci_high": -0.00146,
+   "p_bootstrap": 0.001,
+   "dm_stat": -3.436,
+   "p_dm": 0.0006
+  }
+ ]
 }

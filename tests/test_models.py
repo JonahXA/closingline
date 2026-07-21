@@ -120,6 +120,23 @@ def test_xgdc_falls_back_to_goals_without_xg_data():
     assert np.allclose(dc.predict("Strong", "Weak"), xgdc.predict("Strong", "Weak"), atol=1e-6)
 
 
+def test_significance_detects_real_gap_and_ignores_noise():
+    from closingline.significance import _bootstrap, _diebold_mariano
+
+    rng = np.random.default_rng(0)
+    # A true small positive differential (signal) must register on both tests.
+    signal = rng.normal(0.01, 0.05, size=4000)
+    lo, hi, p_boot = _bootstrap(signal)
+    dm, p_dm = _diebold_mariano(signal)
+    assert lo > 0 and p_boot < 0.05 and p_dm < 0.05
+
+    # Zero-mean noise must not.
+    noise = rng.normal(0.0, 0.05, size=4000)
+    lo, hi, p_boot = _bootstrap(noise)
+    _, p_dm = _diebold_mariano(noise)
+    assert lo < 0 < hi and p_boot > 0.05 and p_dm > 0.05
+
+
 def test_implied_probs_devig_and_source_preference():
     row = pd.Series({"PSCH": 2.0, "PSCD": 3.5, "PSCA": 4.0, "B365H": 1.9, "B365D": 3.4, "B365A": 3.9})
     p_home, p_draw, p_away, source = implied_probs(row)
