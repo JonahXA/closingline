@@ -20,6 +20,12 @@ import pandas as pd
 from .data import DATA_DIR, LEAGUES, _session, current_season_start_year
 
 XG_DIR = DATA_DIR.parent / "xg"
+PLAYERS_DIR = DATA_DIR.parent / "xg_players"
+
+PLAYER_FIELDS = [
+    "id", "player_name", "team_title", "position", "games", "time",
+    "goals", "xG", "assists", "xA", "shots", "key_passes", "npg", "npxG",
+]
 
 UNDERSTAT_LEAGUES = {
     "E0": "EPL",
@@ -106,6 +112,44 @@ def download_xg(force_current: bool = True) -> None:
             if rows:
                 pd.DataFrame(rows).to_csv(dest, index=False)
             time.sleep(1)
+
+
+def download_players(force_current: bool = True) -> None:
+    """Season-aggregate per-player xG/xA/minutes from the same league
+    endpoint. Raw material for future player-level ratings."""
+    PLAYERS_DIR.mkdir(parents=True, exist_ok=True)
+    current = current_season_start_year()
+    for div, ust in UNDERSTAT_LEAGUES.items():
+        for year in range(FIRST_SEASON, current + 1):
+            dest = PLAYERS_DIR / f"{ust}_{year}.csv"
+            if dest.exists() and not (force_current and year >= current - 1):
+                continue
+            try:
+                resp = _session.get(
+                    f"https://understat.com/getLeagueData/{ust}/{year}",
+                    timeout=30,
+                    headers={
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Referer": f"https://understat.com/league/{ust}/{year}",
+                    },
+                )
+                resp.raise_for_status()
+                players = resp.json().get("players", [])
+            except Exception as e:  # noqa: BLE001
+                print(f"player fetch failed for {ust} {year}: {e}")
+                continue
+            if players:
+                df = pd.DataFrame(players)
+                keep = [c for c in PLAYER_FIELDS if c in df.columns]
+                df[keep].assign(Div=div, season=year).to_csv(dest, index=False)
+            time.sleep(1)
+
+
+def load_players() -> pd.DataFrame:
+    files = sorted(PLAYERS_DIR.glob("*.csv"))
+    if not files:
+        return pd.DataFrame()
+    return pd.concat([pd.read_csv(f) for f in files], ignore_index=True)
 
 
 def _norm(name: str) -> str:

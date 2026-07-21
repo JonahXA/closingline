@@ -18,6 +18,7 @@ def main() -> None:
     sub.add_parser("export", help="Export dashboard data JSON from reports and predictions")
     sub.add_parser("clv", help="Closing-line-value study from the backtest report")
     sub.add_parser("bias", help="Scan the backtest for market soft spots by bucket")
+    sub.add_parser("sweep", help="Walk-forward hyperparameter sweep for xG-Dixon-Coles")
     p2 = sub.add_parser("paper", help="Log/settle hypothetical value bets (no real wagering)")
     p2.add_argument("--settle", action="store_true", help="Score settled bets instead of logging")
 
@@ -28,6 +29,7 @@ def main() -> None:
         data.download_history()
         data.download_fixtures()
         xg.download_xg()
+        xg.download_players()
         print("Ingest complete.")
     elif args.command == "predict":
         from . import predict
@@ -58,6 +60,10 @@ def main() -> None:
         from . import bias
 
         bias.run()
+    elif args.command == "sweep":
+        from . import sweep
+
+        sweep.run()
     elif args.command == "paper":
         from . import paper
 

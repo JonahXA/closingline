@@ -24,6 +24,7 @@ jobs:
           path: |
             data/raw
             data/xg
+            data/xg_players
           key: football-data-${{ github.run_id }}
           restore-keys: football-data-
 

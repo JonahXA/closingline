@@ -113,8 +113,10 @@ def test_xgdc_falls_back_to_goals_without_xg_data():
 
     m = synthetic_matches()
     as_of = m["Date"].max().date() + dt.timedelta(days=1)
-    dc = DixonColes().fit(m, as_of=as_of)
-    xgdc = XgDixonColes().fit(m, as_of=as_of)  # synthetic teams have no xG
+    # Match decay so only the goals/xG blend can differ; synthetic teams
+    # have no xG, so the fallback must reproduce plain Dixon-Coles exactly.
+    dc = DixonColes(xi=XgDixonColes().xi).fit(m, as_of=as_of)
+    xgdc = XgDixonColes().fit(m, as_of=as_of)
     assert np.allclose(dc.predict("Strong", "Weak"), xgdc.predict("Strong", "Weak"), atol=1e-6)
 
 

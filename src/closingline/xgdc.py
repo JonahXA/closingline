@@ -14,13 +14,19 @@ import datetime as dt
 
 import pandas as pd
 
-from .model import DEFAULT_XI, DixonColes
+from .model import DixonColes
+
+# Tuned by walk-forward sweep (see reports/sweep.csv, `closingline sweep`):
+# alpha=0.5 was already optimal; xi=0.003 (faster decay than the classical
+# default 0.0019) won on both Brier and log loss over 5,286 matches.
+XGDC_XI = 0.003
+XGDC_ALPHA = 0.5
 
 
 class XgDixonColes(DixonColes):
     name = "xg-dixon-coles"
 
-    def __init__(self, xi: float = DEFAULT_XI, alpha: float = 0.5):
+    def __init__(self, xi: float = XGDC_XI, alpha: float = XGDC_ALPHA):
         super().__init__(xi=xi)
         self.alpha = alpha  # weight on actual goals; (1 - alpha) on xG
         self._pool_len = -1

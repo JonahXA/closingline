@@ -11,7 +11,7 @@ The research question, extending my [ML market-efficiency study of the 2026 Worl
 ## How it works
 
 1. **Ingest** — historical results and closing odds from [football-data.co.uk](https://www.football-data.co.uk), per-match xG from [Understat](https://understat.com), plus upcoming fixtures.
-2. **Model** — a zoo of three structurally different models: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay; Elo-Poisson (margin-weighted Elo ratings mapped to expected goals); and a gradient-boosted classifier over causal form features (rolling goals, points per game, rest days, Elo diff). They are pooled in a log-linear ensemble whose weights are fit only on out-of-sample predictions — earlier walk-forward windows in the backtest, the committed backtest report live — so the weighting never sees in-sample fits. Every model's forecasts are published so each builds its own track record.
+2. **Model** — a zoo of four structurally different models: Dixon-Coles (1997) bivariate Poisson with low-score dependence correction and exponential time decay; the same structure fit on a goals/xG blend (`xg-dixon-coles`, the dominant component); Elo-Poisson (margin-weighted Elo ratings mapped to expected goals); and a gradient-boosted classifier over causal form and xG features (rolling goals, points per game, shots on target, per-match xG, rest days, Elo diff). They are pooled in a log-linear ensemble whose weights are fit only on out-of-sample predictions — earlier walk-forward windows in the backtest, the committed backtest report live — so the weighting never sees in-sample fits. Hyperparameters (blend ratio, time-decay rate) are tuned by walk-forward sweep (`closingline sweep`). Every model's forecasts are published so each builds its own track record.
 3. **Predict** — daily GitHub Actions run issues forecasts for fixtures in the next 7 days and commits them to [`predictions/`](predictions/). First issuance stands; nothing is overwritten.
 4. **Evaluate** — once results arrive, forecasts are scored with Brier score and log loss against de-vigged closing-line probabilities (Pinnacle closing preferred).
 
@@ -23,6 +23,10 @@ closingline ingest      # download data
 closingline predict     # issue forecasts for the next 7 days
 closingline evaluate    # score issued forecasts vs results and the market
 closingline backtest    # walk-forward backtest over past seasons
+closingline sweep       # walk-forward hyperparameter sweep (blend ratio, decay)
+closingline bias        # scan the backtest for market soft spots
+closingline clv         # closing-line-value study (opening vs closing vs model)
+closingline paper       # log/settle hypothetical value bets (research only, no wagering)
 closingline export      # regenerate dashboard/public/data.json
 ```
 
@@ -32,14 +36,14 @@ The dashboard is a static Next.js app in [`dashboard/`](dashboard/), rebuilt and
 
 | | Brier | Log loss |
 |---|---|---|
-| **Ensemble (weighted log-pool, primary)** | **0.5861** | **0.9836** |
-| Dixon-Coles on goals/xG blend | 0.5860 | 0.9836 |
+| **Ensemble (weighted log-pool, primary)** | **0.5854** | **0.9826** |
+| Dixon-Coles on goals/xG blend (tuned) | 0.5850 | 0.9821 |
 | Dixon-Coles | 0.5874 | 0.9855 |
 | Elo-Poisson | 0.5911 | 0.9914 |
 | Gradient boosting (form + xG features) | 0.5931 | 0.9955 |
 | De-vigged closing line | 0.5734 | 0.9644 |
 
-Pool weights (fit on out-of-sample history only): ~75% xG-blend Dixon-Coles, ~23% GBM, goals-only Dixon-Coles ~0–8%, Elo 0.
+Pool weights (fit on out-of-sample history only): ~80–100% xG-blend Dixon-Coles, ~16–20% GBM, goals-only Dixon-Coles and Elo priced out to 0.
 
 The market wins everywhere — for now. The size of the gap is the research result, and shrinking it is the roadmap.
 
@@ -49,7 +53,7 @@ The market wins everywhere — for now. The size of the gap is the research resu
 2. **Equal-weight ensembling dilutes the best model; OOS-fitted weights fix it** — they converge to ~100% Dixon-Coles on their own. The ensemble stays primary because it self-corrects if any component starts adding value.
 3. **Neither generic form features nor shots-on-target form add information beyond goals** — the GBM earned ~0 pool weight both times. **True xG does**: with Understat per-match xG features the GBM earns 25–29% of the pool in every league, and the ensemble beats Dixon-Coles everywhere (0.5867 vs 0.5874) — the first model improvement over the classical baseline, cutting the gap to the market from +2.44% to +2.32%.
 4. **The market's edge is not late-breaking news** (CLV study, `closingline clv`): the opening line (Brier 0.5747) is nearly as sharp as the close (0.5734), our model loses to both by similar margins, and the model has zero ability to predict line movement (r = −0.02, sign agreement 48%). Whatever the market knows, it knows days before kickoff — and it is already public information our goals-only models fail to extract.
-5. **Fitting the classical model on chance quality beats fitting it on goals**: Dixon-Coles on a 50/50 goals/xG blend (0.5860) beats goals-only Dixon-Coles (0.5874) in every league, and the OOS pool weights immediately made it the dominant component (~75%). Cumulative gap to the market: +2.44% → +2.21% across three model generations.
+5. **Fitting the classical model on chance quality beats fitting it on goals**: Dixon-Coles on a 50/50 goals/xG blend beats goals-only Dixon-Coles in every league, and the OOS pool weights immediately made it the dominant component. A walk-forward hyperparameter sweep (`closingline sweep`) confirmed the 50/50 blend was already optimal but found the classical time-decay default (xi=0.0019) too slow — xi=0.003 (recent matches weighted more heavily) improved it further to 0.5850, and the tuned model now takes 80–100% of the pool. Cumulative gap to the market: +2.44% → **+2.09%** across four model generations.
 6. **The market's soft spots are not where intuition says** (`closingline bias`): the gap is *smallest* in Aug–Sep (+0.009) and grows to +0.014 by spring — both we and the market are worst at season start, and the market's relative edge accumulates with in-season information. The EPL line is the sharpest (+0.020), Ligue 1 the softest (+0.008). No bucket flips the sign, and an EV simulation against fair closing prices loses 10–15% per unit — larger model-market disagreement predicts model error, not market error.
 
 ## Roadmap
@@ -63,8 +67,10 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Shots-on-target features for the GBM (negative result — no added information)
 - [x] CLV study: opening vs closing vs model, line-movement prediction
 - [x] True xG data (Understat) — GBM earns ~26% pool weight; ensemble beats Dixon-Coles in every league
-- [x] xG-blend Dixon-Coles — best single model, ~75% of the pool
+- [x] xG-blend Dixon-Coles — best single model, dominant in the pool
 - [x] Bias scan (`closingline bias`) and pre-registered paper trading (`closingline paper`, quarter-Kelly, no real wagering)
+- [x] Walk-forward hyperparameter sweep (`closingline sweep`) — tuned blend ratio + time decay (gap +2.21% → +2.09%)
+- [x] Per-player season xG/xA capture (Understat) — foundation for player-level ratings
 - [ ] Player-level xG ratings and lineup-aware T-60min forecasts — the main untapped edge candidates
 - [ ] Live-season report after matchweek 10: pre-registered forecasts vs the market
 
