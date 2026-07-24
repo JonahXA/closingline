@@ -108,6 +108,37 @@ section.card p.sub {
   margin: 4px 0 18px;
 }
 
+ul.findings {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+
+ul.findings li {
+  position: relative;
+  padding-left: 20px;
+  font-size: 0.92rem;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+ul.findings li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.55em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--series-model);
+}
+
+ul.findings strong {
+  color: var(--ink);
+}
+
 table {
   width: 100%;
   border-collapse: collapse;

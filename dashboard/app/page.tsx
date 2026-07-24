@@ -150,6 +150,37 @@ export default function Home() {
       )}
 
       <section className="card">
+        <h2>What this project found</h2>
+        <p className="sub">
+          The market wins — but that headline is the start, not the conclusion. The gap is the
+          measurement; what closes it and what doesn&apos;t is the research. Twelve experiments,
+          each walk-forward validated and significance-tested, most of them reported as clean
+          negatives.
+        </p>
+        <ul className="findings">
+          <li>
+            <strong>The model is well-calibrated.</strong> When it says 60%, it happens ~60% of
+            the time — so the market&apos;s edge is <em>information</em>, not arithmetic.
+          </li>
+          <li>
+            <strong>Only shot quality (xG) was genuinely new information.</strong> Rolling form,
+            shots on target, prior-season squad quality, and even perfect (oracle) lineup
+            knowledge all turned out to be redundant with what the ratings already extract from
+            results.
+          </li>
+          <li>
+            <strong>The gap is statistically real</strong> (p &lt; 0.001), and so is the one
+            improvement that worked — fitting the classical model on xG instead of goals.
+          </li>
+          <li>
+            <strong>The market&apos;s edge is public and early.</strong> The opening line is
+            nearly as sharp as the close, and the model can&apos;t predict line movement — so the
+            missing information is available days before kickoff, just not in box scores.
+          </li>
+        </ul>
+      </section>
+
+      <section className="card">
         <h2>Live forecasts</h2>
         <p className="sub">
           Issued daily by GitHub Actions and committed before kickoff — the git history is the
