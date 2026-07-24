@@ -18,10 +18,26 @@ from .elo import elo_pass
 from .features import FEATURE_COLS, build_features, snapshot
 
 
+# Tuned by walk-forward sweep (reports/sweep_gbm.csv, `closingline sweep
+# --model gbm`): 0.5931 -> 0.5902. The intuition-set defaults were slightly
+# overfitting — slower learning, shallower trees, and stronger L2 all helped.
+GBM_PARAMS = dict(
+    max_iter=300,
+    learning_rate=0.03,
+    max_leaf_nodes=7,
+    min_samples_leaf=40,
+    l2_regularization=5.0,
+    early_stopping=True,
+    validation_fraction=0.15,
+    random_state=0,
+)
+
+
 class GradientBoosted:
     name = "gbm"
 
-    def __init__(self) -> None:
+    def __init__(self, **params) -> None:
+        self.params = {**GBM_PARAMS, **params}
         self._pool_len = -1
         self._features: pd.DataFrame | None = None
         self._hist = None
@@ -50,16 +66,7 @@ class GradientBoosted:
         mask = (self._features["Date"] < as_of_ts).to_numpy()
         X = self._features.loc[mask, FEATURE_COLS].to_numpy(dtype=float)
         y = self._outcome[mask]
-        self._clf = HistGradientBoostingClassifier(
-            max_iter=300,
-            learning_rate=0.06,
-            max_leaf_nodes=15,
-            min_samples_leaf=40,
-            l2_regularization=1.0,
-            early_stopping=True,
-            validation_fraction=0.15,
-            random_state=0,
-        )
+        self._clf = HistGradientBoostingClassifier(**self.params)
         self._clf.fit(X, y)
         self._as_of = as_of_ts
         return self

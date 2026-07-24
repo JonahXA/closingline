@@ -120,6 +120,26 @@ def test_xgdc_falls_back_to_goals_without_xg_data():
     assert np.allclose(dc.predict("Strong", "Weak"), xgdc.predict("Strong", "Weak"), atol=1e-6)
 
 
+def test_shrinkage_pulls_ratings_toward_the_mean():
+    """Empirical-Bayes shrinkage must compress the spread of team ratings,
+    and must reduce to plain MLE when the penalty is zero."""
+    m = synthetic_matches()
+    as_of = m["Date"].max().date() + dt.timedelta(days=1)
+
+    plain = DixonColes().fit(m, as_of=as_of)
+    shrunk = DixonColes(shrinkage=5.0).fit(m, as_of=as_of)
+
+    spread_plain = np.std(list(plain.attack.values()))
+    spread_shrunk = np.std(list(shrunk.attack.values()))
+    assert spread_shrunk < spread_plain
+
+    # shrinkage=0 must be exactly the unpenalized fit.
+    zero = DixonColes(shrinkage=0.0).fit(m, as_of=as_of)
+    assert np.allclose(
+        zero.predict("Strong", "Weak"), plain.predict("Strong", "Weak"), atol=1e-9
+    )
+
+
 def test_squad_features_use_only_prior_season_production():
     """The leak this guards: Understat player stats are season aggregates,
     so a season's own production must never inform that season's rating."""

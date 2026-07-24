@@ -51,7 +51,10 @@ def elo_pass(
 class EloPoisson:
     name = "elo-poisson"
 
-    def __init__(self, k: float = 20.0, hfa: float = 60.0, xi: float = DEFAULT_XI):
+    # k and hfa tuned by walk-forward sweep (reports/sweep_elo.csv):
+    # 0.5911 -> 0.5906. Faster updates and a smaller home constant than the
+    # original intuition-set 20/60.
+    def __init__(self, k: float = 30.0, hfa: float = 30.0, xi: float = DEFAULT_XI):
         self.k = k
         self.hfa = hfa
         self.xi = xi

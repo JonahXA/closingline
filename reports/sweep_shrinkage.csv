@@ -1,0 +1,6 @@
+xi,alpha,shrinkage,brier,logloss,matches,note
+0.003,0.5,0.0,0.585,0.9821,5286,baseline (current production values)
+0.003,0.5,0.5,0.5859,0.9835,5286,vary shrinkage
+0.003,0.5,2.0,0.5887,0.9879,5286,vary shrinkage
+0.003,0.5,5.0,0.5933,0.995,5286,vary shrinkage
+0.003,0.5,15.0,0.6034,1.0097,5286,vary shrinkage

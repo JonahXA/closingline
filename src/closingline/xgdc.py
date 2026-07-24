@@ -26,8 +26,9 @@ XGDC_ALPHA = 0.5
 class XgDixonColes(DixonColes):
     name = "xg-dixon-coles"
 
-    def __init__(self, xi: float = XGDC_XI, alpha: float = XGDC_ALPHA):
-        super().__init__(xi=xi)
+    def __init__(self, xi: float = XGDC_XI, alpha: float = XGDC_ALPHA,
+                 shrinkage: float = 0.0):
+        super().__init__(xi=xi, shrinkage=shrinkage)
         self.alpha = alpha  # weight on actual goals; (1 - alpha) on xG
         self._pool_len = -1
         self._blended: pd.DataFrame | None = None

@@ -18,7 +18,8 @@ def main() -> None:
     sub.add_parser("export", help="Export dashboard data JSON from reports and predictions")
     sub.add_parser("clv", help="Closing-line-value study from the backtest report")
     sub.add_parser("bias", help="Scan the backtest for market soft spots by bucket")
-    sub.add_parser("sweep", help="Walk-forward hyperparameter sweep for xG-Dixon-Coles")
+    sw = sub.add_parser("sweep", help="Walk-forward hyperparameter sweep")
+    sw.add_argument("--model", choices=["xgdc", "gbm", "elo", "shrinkage"], default="xgdc")
     sub.add_parser("significance", help="Paired bootstrap + Diebold-Mariano tests on score gaps")
     sub.add_parser("squad", help="Squad-strength ratings from prior-season player xG")
     sub.add_parser(
@@ -69,7 +70,12 @@ def main() -> None:
     elif args.command == "sweep":
         from . import sweep
 
-        sweep.run()
+        {
+            "xgdc": sweep.run,
+            "gbm": sweep.run_gbm,
+            "elo": sweep.run_elo,
+            "shrinkage": sweep.run_shrinkage,
+        }[args.model]()
     elif args.command == "significance":
         from . import significance
 

@@ -37,8 +37,13 @@ def _tau(hg: np.ndarray, ag: np.ndarray, lam: np.ndarray, mu: np.ndarray, rho: f
 class DixonColes:
     name = "dixon-coles"
 
-    def __init__(self, xi: float = DEFAULT_XI):
+    def __init__(self, xi: float = DEFAULT_XI, shrinkage: float = 0.0):
         self.xi = xi
+        # L2 penalty pulling attack/defense toward the league mean —
+        # empirical-Bayes shrinkage. Teams with little effective data
+        # (promoted sides, early season) are pulled hardest; teams with
+        # plenty of evidence override it. 0.0 = plain MLE.
+        self.shrinkage = shrinkage
         self.teams: list[str] = []
         self.attack: dict[str, float] = {}
         self.defense: dict[str, float] = {}
@@ -78,7 +83,14 @@ class DixonColes:
                 + hg * np.log(lam) - lam
                 + ag * np.log(mu) - mu
             )
-            return -(w * ll).sum()
+            penalty = 0.0
+            if self.shrinkage:
+                # Attacks are already sum-zero; defenses shrink toward their
+                # own mean so the league scoring level stays free.
+                penalty = self.shrinkage * (
+                    (att**2).sum() + ((dfn - dfn.mean()) ** 2).sum()
+                )
+            return -(w * ll).sum() + penalty
 
         if self.attack:
             # Warm start from the previous fit (walk-forward refits drift slowly).

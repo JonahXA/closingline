@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-24T03:08:49+00:00",
+ "generated_at": "2026-07-24T04:22:37+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -14,54 +14,54 @@
     "model": "ensemble",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5854,
+    "model_brier": 0.5852,
     "market_brier": 0.5734,
-    "model_logloss": 0.9826,
+    "model_logloss": 0.9824,
     "market_logloss": 0.9644
    },
    {
     "model": "ensemble",
     "league": "D1",
     "matches": 918,
-    "model_brier": 0.5845,
+    "model_brier": 0.5848,
     "market_brier": 0.5703,
-    "model_logloss": 0.9834,
+    "model_logloss": 0.9836,
     "market_logloss": 0.9616
    },
    {
     "model": "ensemble",
     "league": "E0",
     "matches": 1140,
-    "model_brier": 0.5879,
+    "model_brier": 0.5882,
     "market_brier": 0.5702,
-    "model_logloss": 0.9862,
+    "model_logloss": 0.9867,
     "market_logloss": 0.9603
    },
    {
     "model": "ensemble",
     "league": "F1",
     "matches": 928,
-    "model_brier": 0.5966,
+    "model_brier": 0.5958,
     "market_brier": 0.5887,
-    "model_logloss": 0.9982,
+    "model_logloss": 0.997,
     "market_logloss": 0.9863
    },
    {
     "model": "ensemble",
     "league": "I1",
     "matches": 1150,
-    "model_brier": 0.5823,
+    "model_brier": 0.5821,
     "market_brier": 0.5733,
-    "model_logloss": 0.9761,
+    "model_logloss": 0.9757,
     "market_logloss": 0.9618
    },
    {
     "model": "ensemble",
     "league": "SP1",
     "matches": 1150,
-    "model_brier": 0.5775,
+    "model_brier": 0.5772,
     "market_brier": 0.5666,
-    "model_logloss": 0.9721,
+    "model_logloss": 0.9718,
     "market_logloss": 0.9556
    }
   ],
@@ -79,18 +79,18 @@
     "model": "elo-poisson",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5911,
+    "model_brier": 0.5906,
     "market_brier": 0.5734,
-    "model_logloss": 0.9914,
+    "model_logloss": 0.9905,
     "market_logloss": 0.9644
    },
    {
     "model": "gbm",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5931,
+    "model_brier": 0.5902,
     "market_brier": 0.5734,
-    "model_logloss": 0.9955,
+    "model_logloss": 0.9906,
     "market_logloss": 0.9644
    },
    {
@@ -106,180 +106,180 @@
     "model": "ensemble",
     "league": "ALL",
     "matches": 5286,
-    "model_brier": 0.5854,
+    "model_brier": 0.5852,
     "market_brier": 0.5734,
-    "model_logloss": 0.9826,
+    "model_logloss": 0.9824,
     "market_logloss": 0.9644
    }
   ],
   "calibration": [
    {
     "bin_mid": 0.05,
-    "predicted": 0.0765,
-    "observed": 0.0621,
-    "n": 338
+    "predicted": 0.0766,
+    "observed": 0.0617,
+    "n": 324
    },
    {
     "bin_mid": 0.15,
-    "predicted": 0.1602,
-    "observed": 0.1411,
-    "n": 2218
+    "predicted": 0.1603,
+    "observed": 0.1357,
+    "n": 2188
    },
    {
     "bin_mid": 0.25,
     "predicted": 0.2507,
-    "observed": 0.257,
-    "n": 6213
+    "observed": 0.2575,
+    "n": 6272
    },
    {
     "bin_mid": 0.35,
-    "predicted": 0.3438,
-    "observed": 0.3311,
-    "n": 2594
+    "predicted": 0.3441,
+    "observed": 0.3328,
+    "n": 2584
    },
    {
     "bin_mid": 0.45,
     "predicted": 0.4481,
-    "observed": 0.4489,
-    "n": 1831
+    "observed": 0.4485,
+    "n": 1835
    },
    {
     "bin_mid": 0.55,
-    "predicted": 0.5449,
-    "observed": 0.5491,
-    "n": 1384
+    "predicted": 0.5447,
+    "observed": 0.5508,
+    "n": 1378
    },
    {
     "bin_mid": 0.65,
-    "predicted": 0.6469,
-    "observed": 0.6796,
-    "n": 824
+    "predicted": 0.6464,
+    "observed": 0.6785,
+    "n": 843
    },
    {
     "bin_mid": 0.75,
-    "predicted": 0.7419,
-    "observed": 0.7443,
-    "n": 352
+    "predicted": 0.7428,
+    "observed": 0.7522,
+    "n": 335
    },
    {
     "bin_mid": 0.85,
-    "predicted": 0.8306,
-    "observed": 0.899,
-    "n": 99
+    "predicted": 0.8296,
+    "observed": 0.9043,
+    "n": 94
    }
   ],
   "monthly": [
    {
     "month": "2023-06",
-    "model_brier": 0.6328,
+    "model_brier": 0.6318,
     "market_brier": 0.6442,
     "n": 30
    },
    {
     "month": "2023-08",
-    "model_brier": 0.5879,
+    "model_brier": 0.586,
     "market_brier": 0.5713,
     "n": 124
    },
    {
     "month": "2023-09",
-    "model_brier": 0.5728,
+    "model_brier": 0.5717,
     "market_brier": 0.5611,
     "n": 189
    },
    {
     "month": "2023-10",
-    "model_brier": 0.5502,
+    "model_brier": 0.5515,
     "market_brier": 0.5285,
     "n": 165
    },
    {
     "month": "2023-11",
-    "model_brier": 0.6098,
+    "model_brier": 0.6114,
     "market_brier": 0.5909,
     "n": 144
    },
    {
     "month": "2023-12",
-    "model_brier": 0.5722,
+    "model_brier": 0.5724,
     "market_brier": 0.5593,
     "n": 230
    },
    {
     "month": "2024-01",
-    "model_brier": 0.5772,
+    "model_brier": 0.5768,
     "market_brier": 0.5623,
     "n": 140
    },
    {
     "month": "2024-02",
-    "model_brier": 0.598,
+    "model_brier": 0.5984,
     "market_brier": 0.5871,
     "n": 199
    },
    {
     "month": "2024-03",
-    "model_brier": 0.5783,
+    "model_brier": 0.5777,
     "market_brier": 0.5713,
     "n": 180
    },
    {
     "month": "2024-04",
-    "model_brier": 0.587,
+    "model_brier": 0.5868,
     "market_brier": 0.5793,
     "n": 202
    },
    {
     "month": "2024-05",
-    "model_brier": 0.574,
+    "model_brier": 0.5744,
     "market_brier": 0.5435,
     "n": 178
    },
    {
     "month": "2024-06",
-    "model_brier": 0.9094,
+    "model_brier": 0.9191,
     "market_brier": 1.0921,
     "n": 1
    },
    {
     "month": "2024-08",
-    "model_brier": 0.5754,
+    "model_brier": 0.5751,
     "market_brier": 0.5757,
     "n": 125
    },
    {
     "month": "2024-09",
-    "model_brier": 0.5659,
+    "model_brier": 0.5662,
     "market_brier": 0.553,
     "n": 174
    },
    {
     "month": "2024-10",
-    "model_brier": 0.5655,
+    "model_brier": 0.5646,
     "market_brier": 0.5687,
     "n": 153
    },
    {
     "month": "2024-11",
-    "model_brier": 0.5786,
+    "model_brier": 0.5779,
     "market_brier": 0.5693,
     "n": 167
    },
    {
     "month": "2024-12",
-    "model_brier": 0.6008,
+    "model_brier": 0.5996,
     "market_brier": 0.5822,
     "n": 199
    },
    {
     "month": "2025-01",
-    "model_brier": 0.6019,
+    "model_brier": 0.603,
     "market_brier": 0.5919,
     "n": 185
    },
    {
     "month": "2025-02",
-    "model_brier": 0.5582,
+    "model_brier": 0.5575,
     "market_brier": 0.5515,
     "n": 196
    },
@@ -291,73 +291,73 @@
    },
    {
     "month": "2025-04",
-    "model_brier": 0.5961,
+    "model_brier": 0.5954,
     "market_brier": 0.5758,
     "n": 203
    },
    {
     "month": "2025-05",
-    "model_brier": 0.5784,
+    "model_brier": 0.5787,
     "market_brier": 0.5561,
     "n": 185
    },
    {
     "month": "2025-08",
-    "model_brier": 0.575,
+    "model_brier": 0.5748,
     "market_brier": 0.5643,
     "n": 126
    },
    {
     "month": "2025-09",
-    "model_brier": 0.5767,
+    "model_brier": 0.5771,
     "market_brier": 0.5672,
     "n": 153
    },
    {
     "month": "2025-10",
-    "model_brier": 0.5859,
+    "model_brier": 0.5857,
     "market_brier": 0.589,
     "n": 165
    },
    {
     "month": "2025-11",
-    "model_brier": 0.5737,
+    "model_brier": 0.5734,
     "market_brier": 0.5545,
     "n": 188
    },
    {
     "month": "2025-12",
-    "model_brier": 0.5883,
+    "model_brier": 0.5905,
     "market_brier": 0.579,
     "n": 170
    },
    {
     "month": "2026-01",
-    "model_brier": 0.6127,
+    "model_brier": 0.6119,
     "market_brier": 0.5931,
     "n": 223
    },
    {
     "month": "2026-02",
-    "model_brier": 0.5765,
+    "model_brier": 0.5771,
     "market_brier": 0.5722,
     "n": 193
    },
    {
     "month": "2026-03",
-    "model_brier": 0.595,
+    "model_brier": 0.5941,
     "market_brier": 0.5884,
     "n": 166
    },
    {
     "month": "2026-04",
-    "model_brier": 0.5986,
+    "model_brier": 0.599,
     "market_brier": 0.5856,
     "n": 181
    },
    {
     "month": "2026-05",
-    "model_brier": 0.6335,
+    "model_brier": 0.6322,
     "market_brier": 0.6237,
     "n": 187
    }
@@ -371,25 +371,25 @@
  },
  "clv": {
   "matches": 5286.0,
-  "model_brier": 0.5854,
+  "model_brier": 0.5852,
   "opening_brier": 0.5747,
   "closing_brier": 0.5734,
-  "model_logloss": 0.9826,
+  "model_logloss": 0.9824,
   "opening_logloss": 0.9665,
   "closing_logloss": 0.9644,
-  "movement_corr": -0.0133,
-  "movement_sign_agreement": 0.4736
+  "movement_corr": -0.0139,
+  "movement_sign_agreement": 0.4734
  },
  "significance": [
   {
    "comparison": "ensemble vs closing line",
    "metric": "brier",
    "matches": 5286,
-   "mean_diff": 0.01198,
-   "ci_low": 0.00918,
-   "ci_high": 0.01477,
+   "mean_diff": 0.01186,
+   "ci_low": 0.00907,
+   "ci_high": 0.01463,
    "p_bootstrap": 0.0,
-   "dm_stat": 8.41,
+   "dm_stat": 8.328,
    "p_dm": 0.0
   },
   {
@@ -407,11 +407,11 @@
    "comparison": "ensemble vs closing line",
    "metric": "logloss",
    "matches": 5286,
-   "mean_diff": 0.01817,
-   "ci_low": 0.01402,
-   "ci_high": 0.02228,
+   "mean_diff": 0.01796,
+   "ci_low": 0.01384,
+   "ci_high": 0.02209,
    "p_bootstrap": 0.0,
-   "dm_stat": 8.825,
+   "dm_stat": 8.73,
    "p_dm": 0.0
   },
   {
