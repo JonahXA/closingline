@@ -53,6 +53,15 @@ const data = raw as unknown as {
     movement_corr: number;
     movement_sign_agreement: number;
   };
+  paper?: {
+    bets_settled: number;
+    hit_rate: number;
+    total_staked: number;
+    pnl_units: number;
+    roi: number;
+    mean_clv: number;
+    positive_clv_rate: number;
+  };
   oracle?: {
     matches: number;
     baseline_brier: number;
@@ -351,6 +360,41 @@ export default function Home() {
             zero on both metrics), confirming the one feature change that moved the needle was a
             real gain rather than a lucky draw.
           </p>
+        </section>
+      )}
+
+      {data.paper && (
+        <section className="card">
+          <h2>Paper track record (no real wagering)</h2>
+          <p className="sub">
+            Each pre-registered forecast is compared to posted odds and the implied
+            quarter-Kelly position is logged before kickoff, then scored against the result and
+            the closing line. This is a <strong>measurement instrument, not a strategy</strong>:
+            the backtest says this rule loses money at every threshold, and loses more as the
+            filter tightens. It runs to test one thing out-of-sample — whether the closing line
+            moves toward our positions, which is the only result that would reopen the edge
+            question.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Settled</th>
+                <th>Hit rate</th>
+                <th>ROI</th>
+                <th>Mean CLV</th>
+                <th>Positive CLV</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>{data.paper.bets_settled}</td>
+                <td>{pct(data.paper.hit_rate)}</td>
+                <td>{(data.paper.roi * 100).toFixed(1)}%</td>
+                <td>{data.paper.mean_clv >= 0 ? "+" : ""}{(data.paper.mean_clv * 100).toFixed(2)}%</td>
+                <td>{pct(data.paper.positive_clv_rate)}</td>
+              </tr>
+            </tbody>
+          </table>
         </section>
       )}
 

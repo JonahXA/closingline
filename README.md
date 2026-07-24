@@ -90,6 +90,8 @@ Four model generations closed the gap from +2.44% to **+2.09%**, and every remai
 | Prior-season squad quality | Redundant with Elo + xG |
 | Perfect (oracle) lineup knowledge | Near-orthogonal to model error |
 
+On the paper track record: it is a **measurement instrument, not a strategy**. Simulated against fair closing prices the same rule loses 10.8% per unit at a 3% edge filter and *more* as the filter tightens (−33.8% at 50%) — larger claimed edge means larger model error. It runs live to test one thing out-of-sample: whether the closing line moves toward our positions. That is the only result that would reopen the edge question, and the backtest says it does not.
+
 The consistent pattern: **shot quality was the only genuinely new information**; everything describing *who is on the pitch* was already priced into the ratings by the results themselves. The residual gap to the closing line is not explained by any public-data feature we have been able to construct — which is itself the project's central empirical result, and is consistent with the market's edge coming from information that is not in box scores at all.
 
 ## Disclaimer

@@ -107,6 +107,10 @@ def run() -> None:
     if oracle_path.exists():
         payload["oracle"] = pd.read_csv(oracle_path).iloc[0].to_dict()
 
+    paper_path = Path("paper/summary.csv")
+    if paper_path.exists():
+        payload["paper"] = pd.read_csv(paper_path).iloc[0].to_dict()
+
     preds = load_all_predictions()
     if not preds.empty:
         preds = preds[preds["model"] == PRIMARY_MODEL]

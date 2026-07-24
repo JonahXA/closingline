@@ -1,12 +1,25 @@
 """Pre-registered paper trading. No real money — ever.
 
-Each day, compare the primary model's frozen forecasts to the odds posted
-in the fixtures feed. Where the model sees positive expected value beyond
-a threshold, log a hypothetical quarter-Kelly bet to paper/bets.csv,
-committed before kickoff like every forecast. Settlement scores each bet
-against the result and the de-vigged closing line, so the repo accumulates
-a tamper-evident answer to "does the model find value?" — measured in both
-profit and closing-line value.
+This is a MEASUREMENT INSTRUMENT, not a strategy we expect to profit. The
+backtest is unambiguous that it should not: simulated against fair closing
+prices the same rule loses 10.8% per unit at a 3% edge filter, and loses
+MORE as the filter tightens (-33.8% at 50%). Larger model-market
+disagreement predicts larger model error, not market error. Anyone reading
+paper/summary.csv should expect a negative ROI, and its value is that the
+number is pre-registered and tamper-evident rather than favourable.
+
+What it is for: closing-line value. Each day we compare the primary
+model's frozen forecasts to posted odds, log the hypothetical quarter-Kelly
+position the model implies, and later score it against the result AND the
+closing line. If the close were to move systematically toward our
+positions, that would be genuine evidence of information — the one
+outcome that would reopen the edge question. The backtest says it does
+not (sign agreement 47%, a coin flip), so this runs live to test that
+conclusion on out-of-sample data rather than to chase profit.
+
+The threshold is deliberately loose. It is not a tuned selection rule —
+no threshold was profitable, so tightening it would only manufacture
+false precision. It exists to skip the vig-noise region.
 """
 
 from __future__ import annotations
@@ -25,7 +38,10 @@ from .zoo import PRIMARY_MODEL
 PAPER_DIR = Path("paper")
 BETS_FILE = PAPER_DIR / "bets.csv"
 
-EV_THRESHOLD = 0.03  # only log edges > 3% — below that it's vig noise
+# Skips the vig-noise region only. NOT a tuned selection rule: backtested
+# ROI is negative at every threshold and worsens as it tightens, so a
+# "stricter" filter would buy false precision, not profitability.
+EV_THRESHOLD = 0.03
 KELLY_FRACTION = 0.25
 MAX_ODDS = 8.0  # longshot region is where model tail errors concentrate
 
