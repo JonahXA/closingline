@@ -53,6 +53,12 @@ const data = raw as unknown as {
     movement_corr: number;
     movement_sign_agreement: number;
   };
+  oracle?: {
+    matches: number;
+    baseline_brier: number;
+    outcome_corr: number;
+    residual_corr: number;
+  };
   significance?: {
     comparison: string;
     metric: string;
@@ -344,6 +350,45 @@ export default function Home() {
             model on xG instead of goals is a statistically significant improvement (CI excludes
             zero on both metrics), confirming the one feature change that moved the needle was a
             real gain rather than a lucky draw.
+          </p>
+        </section>
+      )}
+
+      {data.oracle && (
+        <section className="card">
+          <h2>What would perfect lineup knowledge be worth?</h2>
+          <p className="sub">
+            Lineup-aware forecasting needs confirmed lineups ~60 minutes before kickoff — a paid
+            feed this project doesn&apos;t have. Rather than train on post-match rosters (which
+            would be leakage and would produce a fake result), we measured an{" "}
+            <strong>upper bound</strong>: give the model an oracle it could never have in
+            production — who actually took the field — and ask whether that explains its errors.{" "}
+            {data.oracle.matches} Premier League matches.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Oracle lineup edge correlates with…</th>
+                <th>r</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Actual goal difference (is the measure real?)</td>
+                <td>{data.oracle.outcome_corr > 0 ? "+" : ""}{data.oracle.outcome_corr.toFixed(3)}</td>
+              </tr>
+              <tr>
+                <td>The model&apos;s residual error (would it help?)</td>
+                <td>{data.oracle.residual_corr > 0 ? "+" : ""}{data.oracle.residual_corr.toFixed(3)}</td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="sub" style={{ marginTop: 14, marginBottom: 0 }}>
+            Lineup strength genuinely predicts results, so the measure is sound — better lineups
+            do win. But it is near-orthogonal to where the model actually misses: Elo and rolling
+            xG have already extracted that information from results themselves. This closes the
+            lineup avenue on evidence rather than on cost — a subscription would not have bought
+            an edge.
           </p>
         </section>
       )}

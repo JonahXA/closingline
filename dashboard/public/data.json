@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-07-21T22:47:03+00:00",
+ "generated_at": "2026-07-24T02:57:11+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -425,5 +425,11 @@
    "dm_stat": -3.436,
    "p_dm": 0.0006
   }
- ]
+ ],
+ "oracle": {
+  "matches": 380.0,
+  "baseline_brier": 0.6262,
+  "outcome_corr": 0.3095,
+  "residual_corr": 0.0233
+ }
 }

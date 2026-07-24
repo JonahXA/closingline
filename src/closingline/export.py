@@ -103,6 +103,10 @@ def run() -> None:
     if sig_path.exists():
         payload["significance"] = pd.read_csv(sig_path).to_dict(orient="records")
 
+    oracle_path = REPORTS_DIR / "oracle_summary.csv"
+    if oracle_path.exists():
+        payload["oracle"] = pd.read_csv(oracle_path).iloc[0].to_dict()
+
     preds = load_all_predictions()
     if not preds.empty:
         preds = preds[preds["model"] == PRIMARY_MODEL]

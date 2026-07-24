@@ -55,7 +55,8 @@ The market wins everywhere — for now. The size of the gap is the research resu
 4. **The market's edge is not late-breaking news** (CLV study, `closingline clv`): the opening line (Brier 0.5747) is nearly as sharp as the close (0.5734), our model loses to both by similar margins, and the model has zero ability to predict line movement (r = −0.02, sign agreement 48%). Whatever the market knows, it knows days before kickoff — and it is already public information our goals-only models fail to extract.
 5. **Fitting the classical model on chance quality beats fitting it on goals**: Dixon-Coles on a 50/50 goals/xG blend beats goals-only Dixon-Coles in every league, and the OOS pool weights immediately made it the dominant component. A walk-forward hyperparameter sweep (`closingline sweep`) confirmed the 50/50 blend was already optimal but found the classical time-decay default (xi=0.0019) too slow — xi=0.003 (recent matches weighted more heavily) improved it further to 0.5850, and the tuned model now takes 80–100% of the pool. Cumulative gap to the market: +2.44% → **+2.09%** across four model generations.
 6. **Prior-season squad quality adds nothing either** (`closingline squad`): minutes-weighted, credibility-shrunk player xG ratings from completed prior seasons rank teams correctly (Liverpool/City/Arsenal top; promoted sides bottom with 36–46% squad continuity), but adding them to the GBM made it *worse* (0.5931 → 0.5945) and cost it pool weight (23% → 17%). Squad quality is largely redundant with what Elo and rolling xG already encode — a good squad produces good xG — so it added variance without information. The module is retained for lineup-aware work, where *per-match availability* rather than season aggregates is the real signal.
-7. **The market's soft spots are not where intuition says** (`closingline bias`): the gap is *smallest* in Aug–Sep (+0.009) and grows to +0.014 by spring — both we and the market are worst at season start, and the market's relative edge accumulates with in-season information. The EPL line is the sharpest (+0.020), Ligue 1 the softest (+0.008). No bucket flips the sign, and an EV simulation against fair closing prices loses 10–15% per unit — larger model-market disagreement predicts model error, not market error.
+7. **Even perfect lineup knowledge would not close the gap** (`closingline oracle`). Lineup-aware forecasting needs *confirmed* lineups published ~60 min before kickoff — a paid feed we don't have; Understat's per-match rosters are post-match records, and training on them would be leakage. So instead of faking it, we measured an **upper bound**: give the model an oracle it could never have in production (who actually took the field) and ask whether that explains its errors. On 380 EPL matches, oracle lineup strength correlates **+0.31 with actual goal difference** — the measure is genuinely informative, better lineups do win — but only **+0.02 with the model's residual error**. Elo and rolling xG already extract that information. This closes the lineup avenue on evidence rather than on cost: a subscription would not have bought an edge.
+8. **The market's soft spots are not where intuition says** (`closingline bias`): the gap is *smallest* in Aug–Sep (+0.009) and grows to +0.014 by spring — both we and the market are worst at season start, and the market's relative edge accumulates with in-season information. The EPL line is the sharpest (+0.020), Ligue 1 the softest (+0.008). No bucket flips the sign, and an EV simulation against fair closing prices loses 10–15% per unit — larger model-market disagreement predicts model error, not market error.
 
 ## Roadmap
 
@@ -73,8 +74,23 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Walk-forward hyperparameter sweep (`closingline sweep`) — tuned blend ratio + time decay (gap +2.21% → +2.09%)
 - [x] Per-player season xG/xA capture (Understat) — foundation for player-level ratings
 - [x] Player-level xG squad ratings (`squad.py`) — negative result: redundant with Elo + xG, removed from the GBM
-- [ ] Lineup-aware T-60min forecasts (per-match availability, not season aggregates) — the main untapped edge candidate
-- [ ] Live-season report after matchweek 10: pre-registered forecasts vs the market
+- [x] Lineup-aware forecasting (`closingline oracle`) — closed on evidence: an upper-bound study shows even perfect lineup knowledge is near-orthogonal to the model's errors
+- [ ] **Live-season track record** — with the public-data feature avenues now exhausted, the pre-registered forecasts become the primary evidence stream. Report due after ~matchweek 10.
+
+## Where this leaves the research question
+
+Four model generations closed the gap from +2.44% to **+2.09%**, and every remaining candidate has now been tested and closed on evidence rather than left as an open promise:
+
+| Tried | Verdict |
+|---|---|
+| Rolling form (goals, points, rest) | No information beyond goals |
+| Shots on target | No information beyond goals |
+| **True xG** | **Real gain** (p < 0.001) |
+| **xG-blended Dixon-Coles + tuned decay** | **Real gain**, now dominant in the pool |
+| Prior-season squad quality | Redundant with Elo + xG |
+| Perfect (oracle) lineup knowledge | Near-orthogonal to model error |
+
+The consistent pattern: **shot quality was the only genuinely new information**; everything describing *who is on the pitch* was already priced into the ratings by the results themselves. The residual gap to the closing line is not explained by any public-data feature we have been able to construct — which is itself the project's central empirical result, and is consistent with the market's edge coming from information that is not in box scores at all.
 
 ## Disclaimer
 
