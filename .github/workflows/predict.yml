@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   predict:
@@ -46,8 +47,38 @@ jobs:
         run: |
           git config user.name "closingline-bot"
           git config user.email "actions@github.com"
+          # paper/ and predictions/ may not exist yet (no fixtures in the
+          # off-season). A missing pathspec aborts `git add` with exit 128 —
+          # that silently killed this job for three days in July 2026 — so
+          # ensure both exist before staging.
+          mkdir -p predictions paper
           git add predictions/ paper/
           if ! git diff --cached --quiet; then
             git commit -m "Forecasts issued $(date -u +%F)"
             git push
           fi
+
+      # A silent failure here means missing pre-registered forecasts, which
+      # cannot be backfilled honestly — so make breakage loud.
+      - name: Open an issue if the run failed
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = 'Daily forecast run failed';
+            const {data: open} = await github.rest.issues.listForRepo({
+              owner: context.repo.owner, repo: context.repo.repo,
+              state: 'open', labels: 'pipeline',
+            });
+            const body = `Run [${context.runId}](https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}) failed on ${new Date().toISOString().slice(0,10)}. Forecasts for today may be missing and cannot be backfilled without breaking pre-registration.`;
+            if (open.some(i => i.title === title)) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner, repo: context.repo.repo,
+                issue_number: open.find(i => i.title === title).number, body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner, repo: context.repo.repo,
+                title, body, labels: ['pipeline'],
+              });
+            }
