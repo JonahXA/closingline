@@ -120,6 +120,39 @@ def test_xgdc_falls_back_to_goals_without_xg_data():
     assert np.allclose(dc.predict("Strong", "Weak"), xgdc.predict("Strong", "Weak"), atol=1e-6)
 
 
+def test_squad_features_use_only_prior_season_production():
+    """The leak this guards: Understat player stats are season aggregates,
+    so a season's own production must never inform that season's rating."""
+    from closingline.squad import team_features
+
+    rows = []
+    for season, xg in [(2020, 1.0), (2021, 50.0)]:  # implausible 2021 spike
+        for pid in range(4):
+            rows.append(
+                {
+                    "id": pid, "player_name": f"p{pid}", "team_title": "Alpha",
+                    "position": "F", "games": 30, "time": 2700, "goals": 10,
+                    "xG": xg, "assists": 2, "xA": 0.0, "shots": 40,
+                    "key_passes": 10, "npg": 9, "npxG": xg, "Div": "E0", "season": season,
+                }
+            )
+    feats = team_features(pd.DataFrame(rows))
+    row2021 = feats[(feats["season"] == 2021) & (feats["team_title"] == "Alpha")].iloc[0]
+    # 2021's rating must reflect 2020's weak output, not 2021's spike.
+    per90_2020 = 1.0 * 90 / 2700
+    # squad_strength is stored rounded to 5dp.
+    assert row2021["squad_strength"] == pytest.approx(per90_2020, abs=1e-5)
+
+
+def test_squad_splits_multi_team_transfer_rows():
+    from closingline.squad import _split_transfers
+
+    df = pd.DataFrame([{"team_title": "Fulham,West Ham", "time": 1000, "id": 1}])
+    out = _split_transfers(df)
+    assert set(out["team_title"]) == {"Fulham", "West Ham"}
+    assert out["time"].tolist() == [500.0, 500.0]
+
+
 def test_significance_detects_real_gap_and_ignores_noise():
     from closingline.significance import _bootstrap, _diebold_mariano
 

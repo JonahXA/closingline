@@ -18,6 +18,11 @@ _ROLL = [
     "sotf5", "sota5", "sotf10", "sota10", "conv10",
     "xgf5", "xga5", "xgf10", "xga10", "rest",
 ]
+# Squad-strength features (squad.py) were tested here and REMOVED: they made
+# the GBM worse (Brier 0.5931 -> 0.5945) and cost it pool weight (23% -> 17%).
+# Prior-season squad quality is largely redundant with Elo + rolling xG, so it
+# added variance without information. squad.py is retained for the
+# lineup-aware work, where per-match availability is the real signal.
 FEATURE_COLS = ["elo_diff"] + [f"{s}_{c}" for s in _SIDES for c in _ROLL]
 
 # A team record:

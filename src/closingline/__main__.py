@@ -20,6 +20,7 @@ def main() -> None:
     sub.add_parser("bias", help="Scan the backtest for market soft spots by bucket")
     sub.add_parser("sweep", help="Walk-forward hyperparameter sweep for xG-Dixon-Coles")
     sub.add_parser("significance", help="Paired bootstrap + Diebold-Mariano tests on score gaps")
+    sub.add_parser("squad", help="Squad-strength ratings from prior-season player xG")
     p2 = sub.add_parser("paper", help="Log/settle hypothetical value bets (no real wagering)")
     p2.add_argument("--settle", action="store_true", help="Score settled bets instead of logging")
 
@@ -69,6 +70,17 @@ def main() -> None:
         from . import significance
 
         significance.run()
+    elif args.command == "squad":
+        from pathlib import Path
+
+        from .squad import team_features
+
+        feats = team_features()
+        Path("reports").mkdir(exist_ok=True)
+        feats.to_csv("reports/squad.csv", index=False)
+        latest = feats[feats["season"] == feats["season"].max()]
+        print(latest.sort_values("squad_strength", ascending=False).head(15).to_string(index=False))
+        print(f"\nWrote reports/squad.csv ({len(feats)} team-seasons).")
     elif args.command == "paper":
         from . import paper
 
