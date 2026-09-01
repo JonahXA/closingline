@@ -1,0 +1,11 @@
+Div,Date,HomeTeam,AwayTeam,p_home,p_draw,p_away,model,generated_at
+F1,2026-09-03,Toulouse,Lille,0.2929,0.2824,0.4246,dixon-coles,2026-09-01T15:27:27+00:00
+F1,2026-09-03,Toulouse,Lille,0.3109,0.2603,0.4288,elo-poisson,2026-09-01T15:27:27+00:00
+F1,2026-09-03,Toulouse,Lille,0.2388,0.2699,0.4913,gbm,2026-09-01T15:27:27+00:00
+F1,2026-09-03,Toulouse,Lille,0.3144,0.2842,0.4014,xg-dixon-coles,2026-09-01T15:27:27+00:00
+F1,2026-09-03,Toulouse,Lille,0.2965,0.2819,0.4216,ensemble,2026-09-01T15:27:27+00:00
+SP1,2026-09-03,Sociedad,Celta,0.4572,0.2479,0.2949,dixon-coles,2026-09-01T15:27:27+00:00
+SP1,2026-09-03,Sociedad,Celta,0.4506,0.2634,0.286,elo-poisson,2026-09-01T15:27:27+00:00
+SP1,2026-09-03,Sociedad,Celta,0.5216,0.2261,0.2523,gbm,2026-09-01T15:27:27+00:00
+SP1,2026-09-03,Sociedad,Celta,0.4754,0.2375,0.2871,xg-dixon-coles,2026-09-01T15:27:27+00:00
+SP1,2026-09-03,Sociedad,Celta,0.4858,0.2351,0.2791,ensemble,2026-09-01T15:27:27+00:00
