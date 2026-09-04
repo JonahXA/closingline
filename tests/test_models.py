@@ -8,10 +8,30 @@ import numpy as np
 import pandas as pd
 import pytest
 
+from closingline.data import _REQUIRED_COLS, _read_csv
 from closingline.features import FEATURE_COLS, build_features
 from closingline.markets import implied_probs
 from closingline.model import DixonColes
 from closingline.zoo import combine, equal_weights, fit_pool_weights
+
+
+def test_read_csv_survives_malformed_files(tmp_path):
+    """Regression: an empty or header-only season CSV (football-data.co.uk
+    publishes one before a season starts) must be skipped, not raise. This
+    KeyError silently killed every daily run from 2026-08-16 to 08-31."""
+    empty = tmp_path / "empty.csv"
+    empty.write_text("")
+    assert len(_read_csv(empty)) == 0
+    assert set(_REQUIRED_COLS).issubset(_read_csv(empty).columns)
+
+    header_only = tmp_path / "header.csv"
+    header_only.write_text("Div,Date,SomethingElse\n")  # no HomeTeam/AwayTeam
+    assert len(_read_csv(header_only)) == 0
+
+    valid = tmp_path / "valid.csv"
+    valid.write_text("Div,Date,HomeTeam,AwayTeam,FTHG,FTAG\nE0,15/08/2026,Arsenal,Chelsea,2,1\n")
+    got = _read_csv(valid)
+    assert len(got) == 1 and got.iloc[0]["HomeTeam"] == "Arsenal"
 
 
 def synthetic_matches(n_rounds: int = 40, seed: int = 0) -> pd.DataFrame:

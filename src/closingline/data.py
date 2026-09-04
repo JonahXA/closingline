@@ -88,12 +88,25 @@ def download_fixtures() -> Path:
     return dest
 
 
+# Columns every usable football-data CSV must have. Early in a season,
+# football-data.co.uk publishes a current-season file that exists but is
+# empty or header-only until the first matches are played — reading it used
+# to raise KeyError and abort the whole pipeline (it silently killed every
+# daily run from 2026-08-16 to 08-31). A malformed file is now skipped.
+_REQUIRED_COLS = ["Div", "Date", "HomeTeam", "AwayTeam"]
+
+
 def _read_csv(path: Path) -> pd.DataFrame:
     try:
         df = pd.read_csv(path, encoding="utf-8-sig", on_bad_lines="skip")
     except UnicodeDecodeError:
         df = pd.read_csv(path, encoding="latin-1", on_bad_lines="skip")
         df.columns = [c.replace("﻿", "").replace("ï»¿", "") for c in df.columns]
+    except pd.errors.EmptyDataError:
+        return pd.DataFrame(columns=_REQUIRED_COLS)
+    if not set(_REQUIRED_COLS).issubset(df.columns):
+        # Header-only or malformed file (e.g. a season not yet started).
+        return pd.DataFrame(columns=_REQUIRED_COLS)
     df = df.dropna(subset=["HomeTeam", "AwayTeam"])
     df = df[df["Div"].isin(ALL_DIVISIONS)]
     df["Date"] = pd.to_datetime(df["Date"], dayfirst=True, format="mixed", errors="coerce")
