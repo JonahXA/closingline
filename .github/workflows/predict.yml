@@ -43,6 +43,9 @@ jobs:
           closingline paper
           closingline paper --settle || true
 
+      - name: Update live scorecard
+        run: closingline scorecard
+
       - name: Commit new forecasts
         run: |
           git config user.name "closingline-bot"
@@ -51,8 +54,8 @@ jobs:
           # off-season). A missing pathspec aborts `git add` with exit 128 —
           # that silently killed this job for three days in July 2026 — so
           # ensure both exist before staging.
-          mkdir -p predictions paper
-          git add predictions/ paper/
+          mkdir -p predictions paper reports
+          git add predictions/ paper/ reports/scorecard.csv reports/scorecard_status.csv
           if ! git diff --cached --quiet; then
             git commit -m "Forecasts issued $(date -u +%F)"
             git push

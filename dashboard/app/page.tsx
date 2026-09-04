@@ -45,6 +45,23 @@ const data = raw as unknown as {
     end: string;
   } | null;
   live: { upcoming: Upcoming[]; scored: unknown[]; summary?: Summary[] };
+  scorecard?: {
+    live_matches_forecast: number;
+    live_matches_resolved: number;
+    primary_model: string;
+    enough_data: boolean;
+    sig_mean_gap?: number;
+    sig_ci_low?: number;
+    sig_ci_high?: number;
+    sig_p_bootstrap?: number;
+    board: {
+      model: string;
+      matches: number;
+      model_brier: number;
+      market_brier: number;
+      gap: number;
+    }[];
+  };
   clv?: {
     matches: number;
     model_brier: number;
@@ -220,6 +237,71 @@ export default function Home() {
           </table>
         )}
       </section>
+
+      {data.scorecard && (
+        <section className="card">
+          <h2>Live track record</h2>
+          <p className="sub">
+            The out-of-sample test: how the pre-registered live forecasts — frozen in git before
+            kickoff — actually score against the closing line. Only live forecasts count here,
+            never the backtest. This is the unfakeable version of the whole project.
+          </p>
+          {data.scorecard.live_matches_resolved === 0 ? (
+            <div className="empty">
+              {data.scorecard.live_matches_forecast} live forecasts issued, none resolved yet —
+              the board fills in automatically as matches are played. First meaningful read
+              around matchweek 10.
+            </div>
+          ) : (
+            <>
+              <p className="sub" style={{ marginTop: -8 }}>
+                {data.scorecard.live_matches_resolved} of{" "}
+                {data.scorecard.live_matches_forecast} pre-registered forecasts resolved.
+                {!data.scorecard.enough_data &&
+                  " Figures are provisional — significance is withheld until 50+ matches resolve."}
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Model</th>
+                    <th>Matches</th>
+                    <th>Model Brier</th>
+                    <th>Market Brier</th>
+                    <th>Gap</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.scorecard.board.map((r) => (
+                    <tr key={r.model}>
+                      <td>
+                        {r.model === data.scorecard!.primary_model ? <strong>{r.model} ★</strong> : r.model}
+                      </td>
+                      <td>{r.matches}</td>
+                      <td>{r.model_brier.toFixed(4)}</td>
+                      <td>{r.market_brier.toFixed(4)}</td>
+                      <td>{r.gap >= 0 ? "+" : ""}{r.gap.toFixed(4)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {data.scorecard.enough_data && data.scorecard.sig_ci_low !== undefined && (
+                <p className="sub" style={{ marginTop: 14 }}>
+                  Primary model vs market: mean gap {data.scorecard.sig_mean_gap! >= 0 ? "+" : ""}
+                  {data.scorecard.sig_mean_gap!.toFixed(4)}, 95% CI [
+                  {data.scorecard.sig_ci_low!.toFixed(4)},{" "}
+                  {data.scorecard.sig_ci_high!.toFixed(4)}], p = {data.scorecard.sig_p_bootstrap} —{" "}
+                  {data.scorecard.sig_ci_low! > 0
+                    ? "the market's live edge is statistically real"
+                    : data.scorecard.sig_ci_high! < 0
+                    ? "the model beats the market live"
+                    : "not statistically distinguishable"}
+                  .
+                </p>
+              )}
+            </>
+          )}
+        </section>
+      )}
 
       {bt && (
         <>

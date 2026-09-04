@@ -111,6 +111,15 @@ def run() -> None:
     if paper_path.exists():
         payload["paper"] = pd.read_csv(paper_path).iloc[0].to_dict()
 
+    sc_status = REPORTS_DIR / "scorecard_status.csv"
+    if sc_status.exists():
+        payload["scorecard"] = pd.read_csv(sc_status).iloc[0].to_dict()
+        sc_board = REPORTS_DIR / "scorecard.csv"
+        board = []
+        if sc_board.exists() and sc_board.stat().st_size > 2:
+            board = json.loads(pd.read_csv(sc_board).to_json(orient="records"))
+        payload["scorecard"]["board"] = board
+
     preds = load_all_predictions()
     if not preds.empty:
         preds = preds[preds["model"] == PRIMARY_MODEL]

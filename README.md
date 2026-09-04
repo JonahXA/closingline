@@ -77,7 +77,8 @@ The market wins everywhere — for now. The size of the gap is the research resu
 - [x] Per-player season xG/xA capture (Understat) — foundation for player-level ratings
 - [x] Player-level xG squad ratings (`squad.py`) — negative result: redundant with Elo + xG, removed from the GBM
 - [x] Lineup-aware forecasting (`closingline oracle`) — closed on evidence: an upper-bound study shows even perfect lineup knowledge is near-orthogonal to the model's errors
-- [ ] **Live-season track record** — with the public-data feature avenues now exhausted, the pre-registered forecasts become the primary evidence stream. Report due after ~matchweek 10.
+- [x] **Live scorecard** (`closingline scorecard`) — scores the pre-registered live forecasts against the closing line as matches resolve, with a significance test once 50+ have played. Runs daily, commits `reports/scorecard.csv`, and shows on the dashboard. This is the out-of-sample, unfakeable version of the backtest gap.
+- [ ] **Live-season report** — first meaningful read due after ~matchweek 10, once enough forecasts have resolved for the scorecard's significance test to fire.
 
 ## Where this leaves the research question
 

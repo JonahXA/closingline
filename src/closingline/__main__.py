@@ -21,6 +21,7 @@ def main() -> None:
     sw = sub.add_parser("sweep", help="Walk-forward hyperparameter sweep")
     sw.add_argument("--model", choices=["xgdc", "gbm", "elo", "shrinkage"], default="xgdc")
     sub.add_parser("significance", help="Paired bootstrap + Diebold-Mariano tests on score gaps")
+    sub.add_parser("scorecard", help="Live-season track record: pre-registered forecasts vs market")
     sub.add_parser("squad", help="Squad-strength ratings from prior-season player xG")
     sub.add_parser(
         "oracle",
@@ -80,6 +81,10 @@ def main() -> None:
         from . import significance
 
         significance.run()
+    elif args.command == "scorecard":
+        from . import scorecard
+
+        scorecard.run()
     elif args.command == "oracle":
         from . import oracle
 

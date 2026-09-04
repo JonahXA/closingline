@@ -15,6 +15,33 @@ from closingline.model import DixonColes
 from closingline.zoo import combine, equal_weights, fit_pool_weights
 
 
+def test_scorecard_significance_detects_a_sharper_market():
+    """The live scorecard's significance path must flag a genuinely sharper
+    market (CI above zero) and never return NaN on degenerate input."""
+    from closingline import scorecard
+
+    rng = np.random.default_rng(3)
+    rows = []
+    for i in range(80):
+        o = rng.integers(0, 3)
+        mkt = np.full(3, 0.2); mkt[o] = 0.6  # market closer to truth
+        mdl = np.full(3, 0.27); mdl[o] = 0.46 + rng.normal(0, 0.02)
+        mdl = np.clip(mdl, 0.01, None); mdl = mdl / mdl.sum()
+        rows.append({
+            "Div": "E0", "Date": f"2026-09-{i % 28 + 1:02d}",
+            "HomeTeam": f"H{i}", "AwayTeam": f"A{i}",
+            "FTHG": 2 if o == 0 else (1 if o == 1 else 0),
+            "FTAG": 0 if o == 0 else (1 if o == 1 else 2),
+            "mkt_home": mkt[0], "mkt_draw": mkt[1], "mkt_away": mkt[2],
+            "p_home": mdl[0], "p_draw": mdl[1], "p_away": mdl[2],
+            "model": "ensemble",
+        })
+    sig = scorecard._significance(pd.DataFrame(rows))
+    assert sig is not None
+    assert np.isfinite(sig["sig_p_dm"]) and np.isfinite(sig["sig_ci_low"])
+    assert sig["sig_ci_low"] > 0  # market significantly sharper by construction
+
+
 def test_read_csv_survives_malformed_files(tmp_path):
     """Regression: an empty or header-only season CSV (football-data.co.uk
     publishes one before a season starts) must be skipped, not raise. This

@@ -60,6 +60,11 @@ def _diebold_mariano(d: np.ndarray) -> tuple[float, float]:
         cov = (demeaned[k:] @ demeaned[:-k]) / n
         var += 2 * w * cov
     se = np.sqrt(var / n)
+    if not np.isfinite(se) or se <= 0:
+        # Zero-variance differential (all paired scores identical): the DM
+        # stat is undefined. Report no evidence of a difference rather than
+        # NaN/inf. In practice this only arises on tiny or degenerate samples.
+        return 0.0, 1.0
     dm = dbar / se
     p = 2 * stats.t.sf(abs(dm), df=n - 1)
     return float(dm), float(p)
