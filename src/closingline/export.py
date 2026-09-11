@@ -110,6 +110,11 @@ def run() -> None:
     paper_path = Path("paper/summary.csv")
     if paper_path.exists():
         payload["paper"] = pd.read_csv(paper_path).iloc[0].to_dict()
+        strat_path = Path("paper/strategies.csv")
+        if strat_path.exists() and strat_path.stat().st_size > 2:
+            payload["paper"]["strategies"] = json.loads(
+                pd.read_csv(strat_path).to_json(orient="records")
+            )
 
     sc_status = REPORTS_DIR / "scorecard_status.csv"
     if sc_status.exists():

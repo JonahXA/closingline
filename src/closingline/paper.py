@@ -50,6 +50,48 @@ ODDS_COLS = {"home": "B365H", "draw": "B365D", "away": "B365A"}
 
 KEY = ["Div", "Date", "HomeTeam", "AwayTeam"]
 
+# Pre-registered strategy set (locked 2026-09-11, BEFORE seeing results, to
+# avoid multiple-comparisons p-hacking). Each is a distinct HYPOTHESIS about
+# where a market inefficiency could hide, not a tuned parameter. All are
+# judged on closing-line value, not ROI. A strategy is a filter: given a
+# match's candidate outcomes (those clearing EV_THRESHOLD), it returns the
+# outcome to back, or None to pass. `baseline` reproduces the original rule
+# exactly, so its history is continuous.
+def _candidates(row: pd.Series) -> list[dict]:
+    """All outcomes for a match that clear the edge threshold, richest first."""
+    out = []
+    for outcome in OUTCOMES:
+        odds = row.get(ODDS_COLS[outcome])
+        p = row[f"p_{outcome}"]
+        if pd.isna(odds) or odds <= 1 or odds > MAX_ODDS:
+            continue
+        ev = p * odds - 1
+        if ev > EV_THRESHOLD:
+            out.append({"outcome": outcome, "odds": float(odds), "p": float(p), "ev": float(ev)})
+    return sorted(out, key=lambda c: -c["ev"])
+
+
+def _pick(cands: list[dict], keep) -> dict | None:
+    """First candidate (highest EV) passing the strategy's `keep` predicate."""
+    for c in cands:
+        if keep(c):
+            return c
+    return None
+
+
+STRATEGIES = {
+    # The original rule: back the single highest-EV outcome above 3%.
+    "baseline": lambda cands: _pick(cands, lambda c: True),
+    # Pickier: only very large disagreements (does selectivity help? no, per backtest).
+    "selective": lambda cands: _pick(cands, lambda c: c["ev"] > 0.10),
+    # Only back favorites — short-priced picks.
+    "favorites": lambda cands: _pick(cands, lambda c: c["odds"] < 2.5),
+    # Only back longshots — directly probes the favourite-longshot bias.
+    "underdogs": lambda cands: _pick(cands, lambda c: c["odds"] > 3.5),
+    # Only back draws — the outcome models handle worst.
+    "draws": lambda cands: _pick(cands, lambda c: c["outcome"] == "draw"),
+}
+
 
 def log_bets() -> pd.DataFrame:
     """Scan today's frozen forecasts vs current fixture odds; append new
@@ -68,33 +110,41 @@ def log_bets() -> pd.DataFrame:
     merged = preds.merge(fixtures, on=KEY, how="inner")
 
     existing = pd.read_csv(BETS_FILE) if BETS_FILE.exists() else pd.DataFrame()
-    already = (
-        set(map(tuple, existing[KEY].astype(str).to_numpy())) if not existing.empty else set()
-    )
+    # Bets logged before the multi-strategy split carry no `strategy` column;
+    # they are the baseline history and are tagged as such.
+    if not existing.empty and "strategy" not in existing.columns:
+        existing["strategy"] = "baseline"
+    already = set()
+    if not existing.empty:
+        already = set(
+            map(tuple, existing[["strategy", *KEY]].astype(str).to_numpy())
+        )
 
     logged_at = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
     rows = []
     for _, r in merged.iterrows():
-        if tuple(str(r[k]) for k in KEY) in already:
+        cands = _candidates(r)
+        if not cands:
             continue
-        best = None
-        for outcome in OUTCOMES:
-            odds = r.get(ODDS_COLS[outcome])
-            p = r[f"p_{outcome}"]
-            if pd.isna(odds) or odds <= 1 or odds > MAX_ODDS:
+        for name, strat in STRATEGIES.items():
+            if (name, *(str(r[k]) for k in KEY)) in already:
                 continue
-            ev = p * odds - 1
-            if ev > EV_THRESHOLD and (best is None or ev > best["ev"]):
-                kelly = (p * odds - 1) / (odds - 1)
-                best = {
-                    "outcome": outcome,
-                    "odds_taken": float(odds),
-                    "p_model": float(p),
-                    "ev": round(float(ev), 4),
+            pick = strat(cands)
+            if pick is None:
+                continue
+            kelly = (pick["p"] * pick["odds"] - 1) / (pick["odds"] - 1)
+            rows.append(
+                {
+                    "strategy": name,
+                    **{k: r[k] for k in KEY},
+                    "outcome": pick["outcome"],
+                    "odds_taken": pick["odds"],
+                    "p_model": round(pick["p"], 4),
+                    "ev": round(pick["ev"], 4),
                     "stake": round(float(KELLY_FRACTION * kelly), 4),
+                    "logged_at": logged_at,
                 }
-        if best:
-            rows.append({**{k: r[k] for k in KEY}, **best, "logged_at": logged_at})
+            )
 
     if not rows:
         return pd.DataFrame()
@@ -119,13 +169,16 @@ def settle() -> pd.DataFrame | None:
         print(f"{len(bets)} bets logged, none settled yet.")
         return None
 
+    if "strategy" not in merged.columns:
+        merged["strategy"] = "baseline"
+
     outcome_idx = np.select(
         [merged["FTHG"] > merged["FTAG"], merged["FTHG"] == merged["FTAG"]], [0, 1], 2
     )
     picked_idx = merged["outcome"].map({o: i for i, o in enumerate(OUTCOMES)}).to_numpy()
-    won = picked_idx == outcome_idx
+    merged["won"] = picked_idx == outcome_idx
     merged["pnl"] = np.where(
-        won, merged["stake"] * (merged["odds_taken"] - 1), -merged["stake"]
+        merged["won"], merged["stake"] * (merged["odds_taken"] - 1), -merged["stake"]
     )
 
     clv = []
@@ -139,20 +192,33 @@ def settle() -> pd.DataFrame | None:
         clv.append(r["odds_taken"] * p_close - 1)
     merged["clv"] = clv
 
-    summary = {
-        "bets_settled": len(merged),
-        "hit_rate": round(float(won.mean()), 4),
-        "total_staked": round(float(merged["stake"].sum()), 4),
-        "pnl_units": round(float(merged["pnl"].sum()), 4),
-        "roi": round(float(merged["pnl"].sum() / merged["stake"].sum()), 4),
-        "mean_clv": round(float(np.nanmean(merged["clv"])), 4),
-        "positive_clv_rate": round(float((merged["clv"].dropna() > 0).mean()), 4),
-    }
+    def _summarize(g: pd.DataFrame) -> dict:
+        return {
+            "bets_settled": len(g),
+            "hit_rate": round(float(g["won"].mean()), 4),
+            "total_staked": round(float(g["stake"].sum()), 4),
+            "pnl_units": round(float(g["pnl"].sum()), 4),
+            "roi": round(float(g["pnl"].sum() / g["stake"].sum()), 4) if g["stake"].sum() else 0.0,
+            "mean_clv": round(float(np.nanmean(g["clv"])), 4) if g["clv"].notna().any() else None,
+            "positive_clv_rate": round(float((g["clv"].dropna() > 0).mean()), 4)
+            if g["clv"].notna().any() else None,
+        }
+
     PAPER_DIR.mkdir(exist_ok=True)
     merged.drop(columns=[c for c in merged.columns if c.endswith("_r")]).to_csv(
         PAPER_DIR / "settled.csv", index=False
     )
+
+    # Per-strategy board (pre-registered comparison, judged on CLV).
+    board = pd.DataFrame(
+        [{"strategy": s, **_summarize(g)} for s, g in merged.groupby("strategy")]
+    ).sort_values("strategy")
+    board.to_csv(PAPER_DIR / "strategies.csv", index=False)
+
+    # summary.csv stays the baseline strategy for dashboard/history continuity.
+    base = merged[merged["strategy"] == "baseline"]
+    summary = _summarize(base) if not base.empty else _summarize(merged)
     pd.DataFrame([summary]).to_csv(PAPER_DIR / "summary.csv", index=False)
-    for k, v in summary.items():
-        print(f"{k}: {v}")
+
+    print(board.to_string(index=False))
     return merged

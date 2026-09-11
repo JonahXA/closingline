@@ -243,3 +243,28 @@ def test_implied_probs_devig_and_source_preference():
     assert source == "PSCH"
     assert abs(p_home + p_draw + p_away - 1) < 1e-9
     assert p_home > p_draw > p_away
+
+
+def test_paper_strategies_filter_by_hypothesis():
+    """Each pre-registered strategy must select bets matching its hypothesis:
+    favorites take only short odds, underdogs only long, draws only draws,
+    selective only large edges, baseline the highest-EV candidate."""
+    from closingline.paper import STRATEGIES
+
+    # Candidates for one match: a favorite, a longshot draw, an away longshot.
+    cands = [
+        {"outcome": "home", "odds": 2.0, "p": 0.60, "ev": 0.20},   # favorite, 20% edge
+        {"outcome": "draw", "odds": 4.0, "p": 0.28, "ev": 0.12},   # longshot draw, 12%
+        {"outcome": "away", "odds": 5.0, "p": 0.21, "ev": 0.05},   # longshot, 5%
+    ]
+    assert STRATEGIES["baseline"](cands)["outcome"] == "home"      # highest EV
+    assert STRATEGIES["selective"](cands)["outcome"] == "home"     # >10% edge, richest
+    assert STRATEGIES["favorites"](cands)["outcome"] == "home"     # odds < 2.5
+    assert STRATEGIES["underdogs"](cands)["outcome"] == "draw"     # odds > 3.5, richest
+    assert STRATEGIES["draws"](cands)["outcome"] == "draw"         # draw only
+
+    # A match with only a small favorite edge: selective and underdogs pass.
+    small = [{"outcome": "home", "odds": 1.8, "p": 0.60, "ev": 0.08}]
+    assert STRATEGIES["selective"](small) is None                  # 8% < 10%
+    assert STRATEGIES["underdogs"](small) is None                  # odds < 3.5
+    assert STRATEGIES["favorites"](small)["outcome"] == "home"

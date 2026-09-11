@@ -78,6 +78,14 @@ const data = raw as unknown as {
     roi: number;
     mean_clv: number;
     positive_clv_rate: number;
+    strategies?: {
+      strategy: string;
+      bets_settled: number;
+      hit_rate: number;
+      roi: number;
+      mean_clv: number | null;
+      positive_clv_rate: number | null;
+    }[];
   };
   oracle?: {
     matches: number;
@@ -519,6 +527,44 @@ export default function Home() {
               <>Sample is now large enough to read: CLV is the verdict on whether a real edge exists.</>
             )}
           </p>
+
+          {data.paper.strategies && data.paper.strategies.length > 1 && (
+            <div style={{ marginTop: 24 }}>
+              <h3 style={{ fontSize: "0.95rem", margin: "0 0 4px" }}>
+                Five pre-registered strategies
+              </h3>
+              <p className="sub" style={{ marginTop: 0 }}>
+                Each tests a distinct hypothesis about where an edge could hide, locked in before
+                seeing results (to avoid p-hacking) and judged on CLV. If all show negative CLV,
+                the &quot;no edge&quot; conclusion is robust; a persistently positive one would be
+                the finding.
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Strategy</th>
+                    <th>Settled</th>
+                    <th>ROI</th>
+                    <th>Mean CLV</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.paper.strategies.map((s) => (
+                    <tr key={s.strategy}>
+                      <td>{s.strategy}</td>
+                      <td>{s.bets_settled}</td>
+                      <td>{s.roi >= 0 ? "+" : ""}{(s.roi * 100).toFixed(1)}%</td>
+                      <td>
+                        {s.mean_clv === null
+                          ? "—"
+                          : `${s.mean_clv >= 0 ? "+" : ""}${(s.mean_clv * 100).toFixed(2)}%`}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </section>
       )}
 
