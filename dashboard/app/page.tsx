@@ -483,17 +483,16 @@ export default function Home() {
             Each pre-registered forecast is compared to posted odds and the implied
             quarter-Kelly position is logged before kickoff, then scored against the result and
             the closing line. This is a <strong>measurement instrument, not a strategy</strong>:
-            the backtest says this rule loses money at every threshold, and loses more as the
-            filter tightens. It runs to test one thing out-of-sample — whether the closing line
-            moves toward our positions, which is the only result that would reopen the edge
-            question.
+            the backtest says this rule loses money at every threshold. The number that matters
+            is closing-line value (CLV) — whether the market moves toward our positions — because
+            it predicts the long run, while ROI on a small sample is mostly noise.
           </p>
           <table>
             <thead>
               <tr>
                 <th>Settled</th>
                 <th>Hit rate</th>
-                <th>ROI</th>
+                <th>ROI (on turnover)</th>
                 <th>Mean CLV</th>
                 <th>Positive CLV</th>
               </tr>
@@ -502,12 +501,24 @@ export default function Home() {
               <tr>
                 <td>{data.paper.bets_settled}</td>
                 <td>{pct(data.paper.hit_rate)}</td>
-                <td>{(data.paper.roi * 100).toFixed(1)}%</td>
+                <td>{data.paper.roi >= 0 ? "+" : ""}{(data.paper.roi * 100).toFixed(1)}%</td>
                 <td>{data.paper.mean_clv >= 0 ? "+" : ""}{(data.paper.mean_clv * 100).toFixed(2)}%</td>
                 <td>{pct(data.paper.positive_clv_rate)}</td>
               </tr>
             </tbody>
           </table>
+          <p className="sub" style={{ marginTop: 14, marginBottom: 0 }}>
+            {data.paper.bets_settled < 200 ? (
+              <>
+                <strong>Far too few bets to conclude anything</strong> ({data.paper.bets_settled} settled; ~200+
+                needed). ROI is currently positive but that is noise from a handful of longshot
+                winners — the CLV is negative, meaning the market moved against our positions, which
+                is the signal that actually predicts the long run. Watch CLV, not ROI.
+              </>
+            ) : (
+              <>Sample is now large enough to read: CLV is the verdict on whether a real edge exists.</>
+            )}
+          </p>
         </section>
       )}
 
