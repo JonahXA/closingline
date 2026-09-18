@@ -1,2 +1,2 @@
 generated_at,live_matches_forecast,live_matches_resolved,primary_model,enough_data,sig_mean_gap,sig_ci_low,sig_ci_high,sig_p_bootstrap,sig_p_dm
-2026-09-18T14:56:12+00:00,154,105,ensemble,True,0.01223,-0.0051,0.02921,0.164,0.1508
+2026-09-18T20:12:34+00:00,154,105,ensemble,True,0.01223,-0.0051,0.02921,0.164,0.1508
