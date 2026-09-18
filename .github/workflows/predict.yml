@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   issues: write
+  actions: write  # to dispatch the deploy workflow after committing
 
 jobs:
   predict:
@@ -63,10 +64,30 @@ jobs:
           mkdir -p predictions paper reports
           git add predictions/ paper/ reports/scorecard.csv reports/scorecard_status.csv \
                   dashboard/public/data.json
-          if ! git diff --cached --quiet; then
+          if git diff --cached --quiet; then
+            echo "nothing to commit"
+          else
             git commit -m "Forecasts issued $(date -u +%F)"
             git push
+            echo "committed=true" >> "$GITHUB_OUTPUT"
           fi
+        id: commit
+
+      # Commits pushed by GITHUB_TOKEN do NOT trigger other workflows (a
+      # GitHub loop-guard), so the push above never fired the deploy — the
+      # live site froze at the last human push (Sep 11 -> Sep 18). Dispatch
+      # the deploy explicitly so the dashboard actually updates each day.
+      - name: Deploy the refreshed dashboard
+        if: steps.commit.outputs.committed == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'pages.yml',
+              ref: 'main',
+            });
 
       # A silent failure here means missing pre-registered forecasts, which
       # cannot be backfilled honestly — so make breakage loud.
