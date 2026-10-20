@@ -1,0 +1,6 @@
+Div,Date,HomeTeam,AwayTeam,p_home,p_draw,p_away,model,generated_at
+SP1,2026-10-21,Levante,Ath Bilbao,0.344,0.2782,0.3778,dixon-coles,2026-10-20T15:37:20+00:00
+SP1,2026-10-21,Levante,Ath Bilbao,0.3889,0.2695,0.3416,elo-poisson,2026-10-20T15:37:20+00:00
+SP1,2026-10-21,Levante,Ath Bilbao,0.3712,0.3071,0.3217,gbm,2026-10-20T15:37:20+00:00
+SP1,2026-10-21,Levante,Ath Bilbao,0.355,0.2564,0.3887,xg-dixon-coles,2026-10-20T15:37:20+00:00
+SP1,2026-10-21,Levante,Ath Bilbao,0.3593,0.2675,0.3732,ensemble,2026-10-20T15:37:20+00:00
