@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-27T16:23:22+00:00",
+ "generated_at": "2026-10-28T17:06:01+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -5472,7 +5472,7 @@
   ]
  },
  "scorecard": {
-  "generated_at": "2026-10-27T16:23:21+00:00",
+  "generated_at": "2026-10-28T17:06:00+00:00",
   "live_matches_forecast": 309,
   "live_matches_resolved": 297,
   "primary_model": "ensemble",
