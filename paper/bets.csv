@@ -501,3 +501,81 @@ SP1,2026-11-01,Santander,Real Madrid,draw,7.5,0.1625,0.2188,0.0084,2026-10-30T17
 SP1,2026-11-01,Ath Bilbao,Sociedad,home,2.15,0.5052,0.0862,0.0187,2026-10-30T17:00:14+00:00,baseline
 SP1,2026-11-01,Ath Bilbao,Sociedad,home,2.15,0.5052,0.0862,0.0187,2026-10-30T17:00:14+00:00,favorites
 SP1,2026-11-02,La Coruna,Osasuna,away,3.5,0.3065,0.0728,0.0073,2026-10-30T17:00:14+00:00,baseline
+D1,2026-11-07,Mainz,Bayern Munich,home,7.0,0.1717,0.2019,0.0084,2026-11-06T17:53:41+00:00,baseline
+D1,2026-11-07,Mainz,Bayern Munich,home,7.0,0.1717,0.2019,0.0084,2026-11-06T17:53:41+00:00,selective
+D1,2026-11-07,Mainz,Bayern Munich,home,7.0,0.1717,0.2019,0.0084,2026-11-06T17:53:41+00:00,underdogs
+D1,2026-11-07,Mainz,Bayern Munich,draw,6.5,0.1747,0.1356,0.0062,2026-11-06T17:53:41+00:00,draws
+D1,2026-11-07,Paderborn,Ein Frankfurt,home,3.1,0.3509,0.0878,0.0105,2026-11-06T17:53:41+00:00,baseline
+D1,2026-11-08,FC Koln,Leverkusen,home,4.0,0.2739,0.0956,0.008,2026-11-06T17:53:41+00:00,baseline
+D1,2026-11-08,FC Koln,Leverkusen,home,4.0,0.2739,0.0956,0.008,2026-11-06T17:53:41+00:00,underdogs
+D1,2026-11-08,Freiburg,Union Berlin,away,6.25,0.1817,0.1356,0.0065,2026-11-06T17:53:41+00:00,baseline
+D1,2026-11-08,Freiburg,Union Berlin,away,6.25,0.1817,0.1356,0.0065,2026-11-06T17:53:41+00:00,selective
+D1,2026-11-08,Freiburg,Union Berlin,away,6.25,0.1817,0.1356,0.0065,2026-11-06T17:53:41+00:00,underdogs
+E0,2026-11-06,Everton,Coventry,away,4.75,0.2416,0.1476,0.0098,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-06,Everton,Coventry,away,4.75,0.2416,0.1476,0.0098,2026-11-06T17:53:41+00:00,selective
+E0,2026-11-06,Everton,Coventry,away,4.75,0.2416,0.1476,0.0098,2026-11-06T17:53:41+00:00,underdogs
+E0,2026-11-07,Leeds,Tottenham,home,2.7,0.4388,0.1848,0.0272,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-07,Leeds,Tottenham,home,2.7,0.4388,0.1848,0.0272,2026-11-06T17:53:41+00:00,selective
+E0,2026-11-07,Fulham,Newcastle,away,3.4,0.3174,0.0792,0.0082,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-07,Nott'm Forest,Man City,home,4.75,0.2357,0.1196,0.008,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-07,Nott'm Forest,Man City,home,4.75,0.2357,0.1196,0.008,2026-11-06T17:53:41+00:00,selective
+E0,2026-11-07,Nott'm Forest,Man City,home,4.75,0.2357,0.1196,0.008,2026-11-06T17:53:41+00:00,underdogs
+E0,2026-11-08,Crystal Palace,Liverpool,home,5.5,0.2444,0.3442,0.0191,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-08,Crystal Palace,Liverpool,home,5.5,0.2444,0.3442,0.0191,2026-11-06T17:53:41+00:00,selective
+E0,2026-11-08,Crystal Palace,Liverpool,home,5.5,0.2444,0.3442,0.0191,2026-11-06T17:53:41+00:00,underdogs
+E0,2026-11-08,Ipswich,Bournemouth,away,1.91,0.5435,0.0381,0.0105,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-08,Ipswich,Bournemouth,away,1.91,0.5435,0.0381,0.0105,2026-11-06T17:53:41+00:00,favorites
+E0,2026-11-08,Sunderland,Chelsea,home,3.9,0.2696,0.0514,0.0044,2026-11-06T17:53:41+00:00,baseline
+E0,2026-11-08,Sunderland,Chelsea,home,3.9,0.2696,0.0514,0.0044,2026-11-06T17:53:41+00:00,underdogs
+F1,2026-11-07,Auxerre,Paris FC,home,4.33,0.3071,0.3297,0.0248,2026-11-06T17:53:41+00:00,baseline
+F1,2026-11-07,Auxerre,Paris FC,home,4.33,0.3071,0.3297,0.0248,2026-11-06T17:53:41+00:00,selective
+F1,2026-11-07,Auxerre,Paris FC,home,4.33,0.3071,0.3297,0.0248,2026-11-06T17:53:41+00:00,underdogs
+F1,2026-11-07,Auxerre,Paris FC,draw,4.0,0.2674,0.0696,0.0058,2026-11-06T17:53:41+00:00,draws
+F1,2026-11-08,Rennes,Lille,away,3.3,0.3923,0.2946,0.032,2026-11-06T17:53:41+00:00,baseline
+F1,2026-11-08,Rennes,Lille,away,3.3,0.3923,0.2946,0.032,2026-11-06T17:53:41+00:00,selective
+F1,2026-11-08,Brest,Lyon,away,2.5,0.4187,0.0468,0.0078,2026-11-06T17:53:41+00:00,baseline
+F1,2026-11-08,Le Mans,Monaco,home,4.5,0.2418,0.0881,0.0063,2026-11-06T17:53:41+00:00,baseline
+F1,2026-11-08,Le Mans,Monaco,home,4.5,0.2418,0.0881,0.0063,2026-11-06T17:53:41+00:00,underdogs
+F1,2026-11-08,Lens,Marseille,home,2.3,0.4985,0.1465,0.0282,2026-11-06T17:53:41+00:00,baseline
+F1,2026-11-08,Lens,Marseille,home,2.3,0.4985,0.1465,0.0282,2026-11-06T17:53:41+00:00,selective
+F1,2026-11-08,Lens,Marseille,home,2.3,0.4985,0.1465,0.0282,2026-11-06T17:53:41+00:00,favorites
+I1,2026-11-06,Venezia,Udinese,home,2.3,0.4486,0.0318,0.0061,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-06,Venezia,Udinese,home,2.3,0.4486,0.0318,0.0061,2026-11-06T17:53:41+00:00,favorites
+I1,2026-11-07,Torino,Lecce,away,4.75,0.2207,0.0483,0.0032,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-07,Torino,Lecce,away,4.75,0.2207,0.0483,0.0032,2026-11-06T17:53:41+00:00,underdogs
+I1,2026-11-07,Parma,Bologna,home,4.5,0.2416,0.0872,0.0062,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-07,Parma,Bologna,home,4.5,0.2416,0.0872,0.0062,2026-11-06T17:53:41+00:00,underdogs
+I1,2026-11-07,Parma,Bologna,draw,3.5,0.2954,0.0339,0.0034,2026-11-06T17:53:41+00:00,draws
+I1,2026-11-08,Napoli,Lazio,home,2.25,0.4747,0.0681,0.0136,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-08,Napoli,Lazio,home,2.25,0.4747,0.0681,0.0136,2026-11-06T17:53:41+00:00,favorites
+I1,2026-11-08,Napoli,Lazio,draw,3.6,0.2863,0.0307,0.003,2026-11-06T17:53:41+00:00,underdogs
+I1,2026-11-08,Napoli,Lazio,draw,3.6,0.2863,0.0307,0.003,2026-11-06T17:53:41+00:00,draws
+I1,2026-11-08,Inter,Como,home,1.91,0.5551,0.0602,0.0165,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-08,Inter,Como,home,1.91,0.5551,0.0602,0.0165,2026-11-06T17:53:41+00:00,favorites
+I1,2026-11-08,Inter,Como,draw,4.2,0.2484,0.0433,0.0034,2026-11-06T17:53:41+00:00,underdogs
+I1,2026-11-08,Inter,Como,draw,4.2,0.2484,0.0433,0.0034,2026-11-06T17:53:41+00:00,draws
+I1,2026-11-08,Fiorentina,Juventus,away,2.1,0.5107,0.0725,0.0165,2026-11-06T17:53:41+00:00,baseline
+I1,2026-11-08,Fiorentina,Juventus,away,2.1,0.5107,0.0725,0.0165,2026-11-06T17:53:41+00:00,favorites
+SP1,2026-11-06,Sevilla,Alaves,away,4.5,0.3068,0.3806,0.0272,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-06,Sevilla,Alaves,away,4.5,0.3068,0.3806,0.0272,2026-11-06T17:53:41+00:00,selective
+SP1,2026-11-06,Sevilla,Alaves,away,4.5,0.3068,0.3806,0.0272,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-07,Malaga,Santander,home,2.35,0.462,0.0857,0.0159,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-07,Malaga,Santander,home,2.35,0.462,0.0857,0.0159,2026-11-06T17:53:41+00:00,favorites
+SP1,2026-11-07,Osasuna,Ath Bilbao,home,3.6,0.3477,0.2517,0.0242,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-07,Osasuna,Ath Bilbao,home,3.6,0.3477,0.2517,0.0242,2026-11-06T17:53:41+00:00,selective
+SP1,2026-11-07,Osasuna,Ath Bilbao,home,3.6,0.3477,0.2517,0.0242,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-07,Valencia,Real Madrid,draw,6.25,0.2196,0.3725,0.0177,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-07,Valencia,Real Madrid,draw,6.25,0.2196,0.3725,0.0177,2026-11-06T17:53:41+00:00,selective
+SP1,2026-11-07,Valencia,Real Madrid,draw,6.25,0.2196,0.3725,0.0177,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-07,Valencia,Real Madrid,draw,6.25,0.2196,0.3725,0.0177,2026-11-06T17:53:41+00:00,draws
+SP1,2026-11-08,Elche,Betis,home,3.4,0.3261,0.1087,0.0113,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-08,Elche,Betis,home,3.4,0.3261,0.1087,0.0113,2026-11-06T17:53:41+00:00,selective
+SP1,2026-11-08,Sociedad,Vallecano,away,4.75,0.2632,0.2502,0.0167,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-08,Sociedad,Vallecano,away,4.75,0.2632,0.2502,0.0167,2026-11-06T17:53:41+00:00,selective
+SP1,2026-11-08,Sociedad,Vallecano,away,4.75,0.2632,0.2502,0.0167,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-08,Celta,Levante,away,4.0,0.2581,0.0324,0.0027,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-08,Celta,Levante,away,4.0,0.2581,0.0324,0.0027,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-08,Villarreal,Getafe,away,8.0,0.137,0.096,0.0034,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-08,Villarreal,Getafe,away,8.0,0.137,0.096,0.0034,2026-11-06T17:53:41+00:00,underdogs
+SP1,2026-11-08,Ath Madrid,Barcelona,home,3.7,0.2946,0.09,0.0083,2026-11-06T17:53:41+00:00,baseline
+SP1,2026-11-08,Ath Madrid,Barcelona,home,3.7,0.2946,0.09,0.0083,2026-11-06T17:53:41+00:00,underdogs
