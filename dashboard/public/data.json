@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-23T22:30:55+00:00",
+ "generated_at": "2026-11-24T21:04:13+00:00",
  "leagues": {
   "E0": "Premier League",
   "SP1": "La Liga",
@@ -391,48 +391,6 @@
     "p_away": 0.3614,
     "model": "ensemble",
     "generated_at": "2026-10-09T17:24:58+00:00",
-    "mkt_home": null,
-    "mkt_draw": null,
-    "mkt_away": null
-   },
-   {
-    "Div": "E0",
-    "Date": "2026-11-23",
-    "HomeTeam": "Brentford",
-    "AwayTeam": "Everton",
-    "p_home": 0.4712,
-    "p_draw": 0.2587,
-    "p_away": 0.2701,
-    "model": "ensemble",
-    "generated_at": "2026-11-20T19:01:57+00:00",
-    "mkt_home": null,
-    "mkt_draw": null,
-    "mkt_away": null
-   },
-   {
-    "Div": "I1",
-    "Date": "2026-11-23",
-    "HomeTeam": "Monza",
-    "AwayTeam": "Fiorentina",
-    "p_home": 0.3098,
-    "p_draw": 0.263,
-    "p_away": 0.4272,
-    "model": "ensemble",
-    "generated_at": "2026-11-20T19:01:57+00:00",
-    "mkt_home": null,
-    "mkt_draw": null,
-    "mkt_away": null
-   },
-   {
-    "Div": "SP1",
-    "Date": "2026-11-23",
-    "HomeTeam": "Levante",
-    "AwayTeam": "Elche",
-    "p_home": 0.4807,
-    "p_draw": 0.2445,
-    "p_away": 0.2748,
-    "model": "ensemble",
-    "generated_at": "2026-11-20T19:01:57+00:00",
     "mkt_home": null,
     "mkt_draw": null,
     "mkt_away": null
@@ -7176,6 +7134,22 @@
     "mkt_away": 0.2302631579
    },
    {
+    "Div": "E0",
+    "Date": "2026-11-23",
+    "HomeTeam": "Brentford",
+    "AwayTeam": "Everton",
+    "p_home": 0.4712,
+    "p_draw": 0.2587,
+    "p_away": 0.2701,
+    "model": "ensemble",
+    "generated_at": "2026-11-20T19:01:57+00:00",
+    "FTHG": 4.0,
+    "FTAG": 0.0,
+    "mkt_home": 0.450928382,
+    "mkt_draw": 0.2705570292,
+    "mkt_away": 0.2785145889
+   },
+   {
     "Div": "F1",
     "Date": "2026-11-20",
     "HomeTeam": "Troyes",
@@ -7464,6 +7438,22 @@
     "mkt_away": 0.5830269495
    },
    {
+    "Div": "I1",
+    "Date": "2026-11-23",
+    "HomeTeam": "Monza",
+    "AwayTeam": "Fiorentina",
+    "p_home": 0.3098,
+    "p_draw": 0.263,
+    "p_away": 0.4272,
+    "model": "ensemble",
+    "generated_at": "2026-11-20T19:01:57+00:00",
+    "FTHG": 3.0,
+    "FTAG": 0.0,
+    "mkt_home": 0.2441442686,
+    "mkt_draw": 0.2573412561,
+    "mkt_away": 0.4985144752
+   },
+   {
     "Div": "SP1",
     "Date": "2026-11-20",
     "HomeTeam": "Ath Bilbao",
@@ -7606,17 +7596,33 @@
     "mkt_home": 0.1566174818,
     "mkt_draw": 0.2291963149,
     "mkt_away": 0.6141862033
+   },
+   {
+    "Div": "SP1",
+    "Date": "2026-11-23",
+    "HomeTeam": "Levante",
+    "AwayTeam": "Elche",
+    "p_home": 0.4807,
+    "p_draw": 0.2445,
+    "p_away": 0.2748,
+    "model": "ensemble",
+    "generated_at": "2026-11-20T19:01:57+00:00",
+    "FTHG": 1.0,
+    "FTAG": 1.0,
+    "mkt_home": 0.4770773639,
+    "mkt_draw": 0.2578796562,
+    "mkt_away": 0.2650429799
    }
   ],
   "summary": [
    {
     "model": "ensemble",
     "league": "ALL",
-    "matches": 448,
-    "model_brier": 0.5689,
-    "market_brier": 0.5632,
-    "model_logloss": 0.96,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5696,
+    "market_brier": 0.5643,
+    "model_logloss": 0.961,
+    "market_logloss": 0.9535
    },
    {
     "model": "ensemble",
@@ -7630,11 +7636,11 @@
    {
     "model": "ensemble",
     "league": "E0",
-    "matches": 89,
-    "model_brier": 0.6193,
-    "market_brier": 0.6252,
-    "model_logloss": 1.028,
-    "market_logloss": 1.0362
+    "matches": 90,
+    "model_brier": 0.6171,
+    "market_brier": 0.6233,
+    "model_logloss": 1.025,
+    "market_logloss": 1.0335
    },
    {
     "model": "ensemble",
@@ -7648,20 +7654,20 @@
    {
     "model": "ensemble",
     "league": "I1",
-    "matches": 99,
-    "model_brier": 0.5343,
-    "market_brier": 0.5279,
-    "model_logloss": 0.915,
-    "market_logloss": 0.9086
+    "matches": 100,
+    "model_brier": 0.5362,
+    "market_brier": 0.5315,
+    "model_logloss": 0.9175,
+    "market_logloss": 0.9136
    },
    {
     "model": "ensemble",
     "league": "SP1",
-    "matches": 98,
-    "model_brier": 0.5572,
-    "market_brier": 0.5364,
-    "model_logloss": 0.9453,
-    "market_logloss": 0.912
+    "matches": 99,
+    "model_brier": 0.5604,
+    "market_brier": 0.5396,
+    "model_logloss": 0.95,
+    "market_logloss": 0.9164
    }
   ]
  },
@@ -7729,23 +7735,23 @@
   "residual_corr": 0.0233
  },
  "paper": {
-  "bets_settled": 276.0,
-  "hit_rate": 0.2935,
-  "total_staked": 3.7514,
-  "pnl_units": 0.4372,
-  "roi": 0.1165,
-  "mean_clv": -0.0468,
-  "positive_clv_rate": 0.279,
+  "bets_settled": 278.0,
+  "hit_rate": 0.295,
+  "total_staked": 3.7734,
+  "pnl_units": 0.4703,
+  "roi": 0.1246,
+  "mean_clv": -0.0467,
+  "positive_clv_rate": 0.2806,
   "strategies": [
    {
     "strategy": "baseline",
-    "bets_settled": 276,
-    "hit_rate": 0.2935,
-    "total_staked": 3.7514,
-    "pnl_units": 0.4372,
-    "roi": 0.1165,
-    "mean_clv": -0.0468,
-    "positive_clv_rate": 0.279
+    "bets_settled": 278,
+    "hit_rate": 0.295,
+    "total_staked": 3.7734,
+    "pnl_units": 0.4703,
+    "roi": 0.1246,
+    "mean_clv": -0.0467,
+    "positive_clv_rate": 0.2806
    },
    {
     "strategy": "draws",
@@ -7759,92 +7765,92 @@
    },
    {
     "strategy": "favorites",
-    "bets_settled": 36,
-    "hit_rate": 0.5556,
-    "total_staked": 0.6598,
-    "pnl_units": 0.2405,
-    "roi": 0.3644,
-    "mean_clv": -0.0485,
-    "positive_clv_rate": 0.2222
+    "bets_settled": 37,
+    "hit_rate": 0.5405,
+    "total_staked": 0.6671,
+    "pnl_units": 0.2332,
+    "roi": 0.3495,
+    "mean_clv": -0.0464,
+    "positive_clv_rate": 0.2432
    },
    {
     "strategy": "selective",
-    "bets_settled": 145,
-    "hit_rate": 0.2138,
-    "total_staked": 2.4806,
-    "pnl_units": -0.136,
-    "roi": -0.0548,
-    "mean_clv": -0.037,
-    "positive_clv_rate": 0.3034
+    "bets_settled": 146,
+    "hit_rate": 0.2192,
+    "total_staked": 2.4953,
+    "pnl_units": -0.0955,
+    "roi": -0.0383,
+    "mean_clv": -0.0373,
+    "positive_clv_rate": 0.3014
    },
    {
     "strategy": "underdogs",
-    "bets_settled": 143,
-    "hit_rate": 0.1818,
-    "total_staked": 1.5589,
-    "pnl_units": -0.2639,
-    "roi": -0.1693,
-    "mean_clv": -0.0436,
-    "positive_clv_rate": 0.2867
+    "bets_settled": 144,
+    "hit_rate": 0.1875,
+    "total_staked": 1.5736,
+    "pnl_units": -0.2234,
+    "roi": -0.142,
+    "mean_clv": -0.0439,
+    "positive_clv_rate": 0.2847
    }
   ]
  },
  "scorecard": {
-  "generated_at": "2026-11-23T22:30:54+00:00",
+  "generated_at": "2026-11-24T21:04:12+00:00",
   "live_matches_forecast": 453,
-  "live_matches_resolved": 448,
+  "live_matches_resolved": 451,
   "primary_model": "ensemble",
   "enough_data": true,
-  "sig_mean_gap": 0.00577,
-  "sig_ci_low": -0.00282,
-  "sig_ci_high": 0.01398,
-  "sig_p_bootstrap": 0.1934,
-  "sig_p_dm": 0.1686,
+  "sig_mean_gap": 0.00537,
+  "sig_ci_low": -0.00312,
+  "sig_ci_high": 0.01382,
+  "sig_p_bootstrap": 0.2178,
+  "sig_p_dm": 0.2043,
   "board": [
    {
     "model": "dixon-coles",
-    "matches": 448,
-    "model_brier": 0.5712,
-    "market_brier": 0.5632,
-    "gap": 0.008,
-    "model_logloss": 0.9628,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5718,
+    "market_brier": 0.5643,
+    "gap": 0.0076,
+    "model_logloss": 0.9637,
+    "market_logloss": 0.9535
    },
    {
     "model": "elo-poisson",
-    "matches": 448,
-    "model_brier": 0.5736,
-    "market_brier": 0.5632,
-    "gap": 0.0104,
-    "model_logloss": 0.9673,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5741,
+    "market_brier": 0.5643,
+    "gap": 0.0099,
+    "model_logloss": 0.9681,
+    "market_logloss": 0.9535
    },
    {
     "model": "ensemble",
-    "matches": 448,
-    "model_brier": 0.5689,
-    "market_brier": 0.5632,
-    "gap": 0.0058,
-    "model_logloss": 0.96,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5696,
+    "market_brier": 0.5643,
+    "gap": 0.0054,
+    "model_logloss": 0.961,
+    "market_logloss": 0.9535
    },
    {
     "model": "gbm",
-    "matches": 448,
-    "model_brier": 0.5717,
-    "market_brier": 0.5632,
-    "gap": 0.0085,
-    "model_logloss": 0.9661,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5724,
+    "market_brier": 0.5643,
+    "gap": 0.0082,
+    "model_logloss": 0.9672,
+    "market_logloss": 0.9535
    },
    {
     "model": "xg-dixon-coles",
-    "matches": 448,
-    "model_brier": 0.5705,
-    "market_brier": 0.5632,
-    "gap": 0.0073,
-    "model_logloss": 0.9617,
-    "market_logloss": 0.9519
+    "matches": 451,
+    "model_brier": 0.5711,
+    "market_brier": 0.5643,
+    "gap": 0.0069,
+    "model_logloss": 0.9627,
+    "market_logloss": 0.9535
    }
   ]
  }
